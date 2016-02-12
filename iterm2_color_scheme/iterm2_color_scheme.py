@@ -17,9 +17,9 @@ def warn(msg):
 
 
 class ColorSchemeChooser(object):
-    GOTO = {':'}
-    NEXT = {'j'}
-    PREV = {'k'}
+    JUMP = ':'
+    NEXT = 'j'
+    PREV = 'k'
 
     def __init__(self):
         ics_repo = os.path.join(os.path.dirname(__file__),
@@ -34,29 +34,31 @@ class ColorSchemeChooser(object):
             error("Please detach from your tmux session "
                   "before running this script.")
 
-        print 'j/k to navigate, : to jump',
+        self.print_usage()
 
         i = random.choice(range(len(self.schemes)))
         while True:
             key = read_character()
             if key in self.NEXT:
-                i = (i + 1) % len(self.schemes)
+                i += 1
             elif key in self.PREV:
-                i = (i - 1) % len(self.schemes)
-            elif key in self.GOTO:
+                i -= 1
+            elif key in self.JUMP:
                 print '\r%s\r' % self.blank,
                 cmd = raw_input(':')
                 try:
-                    i = int(cmd) % len(self.schemes)
+                    i = int(cmd)
                 except ValueError:
                     try:
                         i = next(i for i, scheme in enumerate(self.schemes)
                                  if cmd.lower() in scheme.lower())
                     except StopIteration:
+                        self.print_usage()
                         continue
             else:
                 print
                 exit(0)
+            i = i % len(self.schemes)
             self.apply_scheme(i)
             self.print_scheme(i)
 
@@ -73,6 +75,13 @@ class ColorSchemeChooser(object):
             i,
             self.schemes[i].split('.')[0]),
         )
+
+    def print_usage(self):
+        print '{next}/{prev} to navigate, {jump} to jump'.format(
+            next=self.NEXT,
+            prev=self.PREV,
+            jump=self.JUMP,
+        ),
 
 
 def read_character():
