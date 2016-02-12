@@ -44,8 +44,16 @@ class ColorSchemeChooser(object):
             elif key in self.PREV:
                 i = (i - 1) % len(self.schemes)
             elif key in self.GOTO:
-                print '\r%s\r:' % self.blank,
-                i = int(raw_input()) % len(self.schemes)
+                print '\r%s\r' % self.blank,
+                cmd = raw_input(':')
+                try:
+                    i = int(cmd) % len(self.schemes)
+                except ValueError:
+                    try:
+                        i = next(i for i, scheme in enumerate(self.schemes)
+                                 if cmd.lower() in scheme.lower())
+                    except StopIteration:
+                        continue
             else:
                 print
                 exit(0)
