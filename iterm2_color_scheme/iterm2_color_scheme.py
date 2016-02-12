@@ -17,6 +17,7 @@ def warn(msg):
 
 
 class ColorSchemeChooser(object):
+    GOTO = {':'}
     NEXT = {'j'}
     PREV = {'k'}
 
@@ -33,7 +34,7 @@ class ColorSchemeChooser(object):
             error("Please detach from your tmux session "
                   "before running this script.")
 
-        print 'j/k to move through color themes',
+        print 'j/k to navigate, : to jump',
 
         i = random.choice(range(len(self.schemes)))
         while True:
@@ -42,6 +43,9 @@ class ColorSchemeChooser(object):
                 i = (i + 1) % len(self.schemes)
             elif key in self.PREV:
                 i = (i - 1) % len(self.schemes)
+            elif key in self.GOTO:
+                print '\r%s\r:' % self.blank,
+                i = int(raw_input()) % len(self.schemes)
             else:
                 print
                 exit(0)
