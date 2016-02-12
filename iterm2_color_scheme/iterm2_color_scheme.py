@@ -17,9 +17,9 @@ def warn(msg):
 
 
 class ColorSchemeChooser(object):
-    JUMP = ':'
-    NEXT = 'j'
-    PREV = 'k'
+    JUMP = {':', '/'}
+    NEXT = {'j'}
+    PREV = {'k'}
 
     def __init__(self):
         ics_repo = os.path.join(os.path.dirname(__file__),
@@ -77,10 +77,14 @@ class ColorSchemeChooser(object):
         self.print_msg("%3d %s" % (i, scheme_name))
 
     def print_usage(self):
+
+        def format_set(s):
+            return  '{%s}' % ','.join(sorted(s))
+
         print '{next}/{prev} to navigate, {jump} to jump'.format(
-            next=self.NEXT,
-            prev=self.PREV,
-            jump=self.JUMP,
+            next=format_set(self.NEXT),
+            prev=format_set(self.PREV),
+            jump=format_set(self.JUMP),
         ),
 
 
