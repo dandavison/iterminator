@@ -44,7 +44,7 @@ class ColorSchemeChooser(object):
             elif key in self.PREV:
                 i -= 1
             elif key in self.JUMP:
-                print '\r%s\r' % self.blank,
+                self.print_msg('')
                 cmd = raw_input(':')
                 try:
                     i = int(cmd)
@@ -69,12 +69,12 @@ class ColorSchemeChooser(object):
             self.schemes_dir + '/' + scheme,
         ])
 
+    def print_msg(self, msg):
+        sys.stdout.write("\r%s\r%s" % (self.blank, msg))
+
     def print_scheme(self, i):
-        sys.stdout.write("\r%s\r%3d %s" % (
-            self.blank,
-            i,
-            self.schemes[i].split('.')[0]),
-        )
+        scheme_name = self.schemes[i].split('.')[0]
+        self.print_msg("%3d %s" % (i, scheme_name))
 
     def print_usage(self):
         print '{next}/{prev} to navigate, {jump} to jump'.format(
