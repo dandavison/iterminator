@@ -1,0 +1,8 @@
+recursive-include iterm2_color_scheme/iTerm2-Color-Schemes *
+prune iterm2_color_scheme/iTerm2-Color-Schemes/backgrounds
+prune iterm2_color_scheme/iTerm2-Color-Schemes/konsole
+prune iterm2_color_scheme/iTerm2-Color-Schemes/screenshots
+prune iterm2_color_scheme/iTerm2-Color-Schemes/terminal
+prune iterm2_color_scheme/iTerm2-Color-Schemes/terminator
+prune iterm2_color_scheme/iTerm2-Color-Schemes/xrdb
+
