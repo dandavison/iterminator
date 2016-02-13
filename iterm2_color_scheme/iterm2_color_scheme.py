@@ -23,7 +23,8 @@ class Scheme(namedtuple('Scheme', ['index', 'path'])):
 
 
 class ColorSchemeBrowser(object):
-    JUMP = {':', '/'}
+    JUMP_TO_NAME = {'/'}
+    JUMP_TO_POSITION = {':'}
     NEXT = {'j'}
     PREV = {'k'}
 
@@ -60,17 +61,22 @@ class ColorSchemeBrowser(object):
                 self.next_scheme()
             elif key in self.PREV:
                 self.prev_scheme()
-            elif key in self.JUMP:
+            elif key in self.JUMP_TO_POSITION:
                 self.display('')
                 pattern = raw_input(':')
                 try:
                     self.jump_to_position(int(pattern))
                 except ValueError:
-                    try:
-                        self.jump_to_name(pattern)
-                    except StopIteration:
-                        self.display(self.usage)
-                        continue
+                    self.display(self.usage)
+                    continue
+            elif key in self.JUMP_TO_NAME:
+                self.display('')
+                pattern = raw_input('/')
+                try:
+                    self.jump_to_name(pattern)
+                except StopIteration:
+                    self.display(self.usage)
+                    continue
             else:
                 exit(0)
             self.apply_scheme()
@@ -113,7 +119,7 @@ class ColorSchemeBrowser(object):
 
         return '{nextprev} to navigate, {jump} to jump'.format(
             nextprev=format_set(self.NEXT | self.PREV),
-            jump=format_set(self.JUMP),
+            jump=format_set(self.JUMP_TO_NAME | self.JUMP_TO_POSITION),
         )
 
 
