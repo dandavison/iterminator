@@ -1,91 +1,120 @@
 #!/usr/bin/env python
+from collections import deque
+from collections import namedtuple
+from itertools import chain
+from itertools import starmap
 import os
-import random
 import subprocess
 import sys
 import termios
 import tty
 
 
-def error(msg):
-    print >>sys.stderr, msg
-    exit(1)
+class Scheme(namedtuple('Scheme', ['index', 'path'])):
+    """
+    An iTerm2 color scheme file.
+    """
+    @property
+    def name(self):
+        return os.path.basename(self.path).split('.')[0]
+
+    def __repr__(self):
+        return "%3d %s" % (self.index, self.name)
 
 
-def warn(msg):
-    print >>sys.stderr, msg
-
-
-class ColorSchemeChooser(object):
+class ColorSchemeBrowser(object):
     JUMP = {':', '/'}
     NEXT = {'j'}
     PREV = {'k'}
 
     def __init__(self):
-        ics_repo = os.path.join(os.path.dirname(__file__),
-                                'iTerm2-Color-Schemes')
-        self.schemes_dir = ics_repo + '/schemes'
-        self.apply_script = ics_repo + '/tools/preview.rb'
-        self.schemes = os.listdir(self.schemes_dir)
-        self.blank = ' ' * max(len(s) for s in self.schemes)
+        self.repo_dir = os.path.join(os.path.dirname(__file__),
+                                     'iTerm2-Color-Schemes')
+        schemes_dir = self.repo_dir + '/schemes'
+        self.schemes = deque(starmap(Scheme,
+                                     enumerate(schemes_dir + '/' + f
+                                               for f in os.listdir(schemes_dir)
+                                               if f.endswith('.itermcolors'))))
 
-    def run(self):
+        # A blank string that is long enough to conceal all other output
+        self.blank = ' ' * max(chain((len(repr(s)) for s in self.schemes),
+                                     [len(self.usage)]))
+
+    @property
+    def scheme(self):
+        return self.schemes[0]
+
+    def browse(self):
+        """
+        Select a color theme interactively.
+        """
         if os.getenv('TMUX'):
             error("Please detach from your tmux session "
                   "before running this script.")
 
-        self.print_usage()
+        self.display(self.usage)
 
-        i = random.choice(range(len(self.schemes)))
         while True:
             key = read_character()
             if key in self.NEXT:
-                i += 1
+                self.next_scheme()
             elif key in self.PREV:
-                i -= 1
+                self.prev_scheme()
             elif key in self.JUMP:
-                self.print_msg('')
-                cmd = raw_input(':')
+                self.display('')
+                pattern = raw_input(':')
                 try:
-                    i = int(cmd)
+                    self.jump_to_position(int(pattern))
                 except ValueError:
                     try:
-                        i = next(i for i, scheme in enumerate(self.schemes)
-                                 if cmd.lower() in scheme.lower())
+                        self.jump_to_name(pattern)
                     except StopIteration:
-                        self.print_usage()
+                        self.display(self.usage)
                         continue
             else:
-                print
                 exit(0)
-            i = i % len(self.schemes)
-            self.apply_scheme(i)
-            self.print_scheme(i)
+            self.apply_scheme()
+            self.display(self.scheme)
 
-    def apply_scheme(self, i):
-        scheme = self.schemes[i]
+    def next_scheme(self):
+        self.schemes.rotate(-1)
+
+    def prev_scheme(self):
+        self.schemes.rotate(+1)
+
+    def jump_to_position(self, i):
+        self.schemes.rotate(self.scheme.index - i)
+
+    def jump_to_name(self, pattern):
+        pattern = pattern.lower()
+        initial_scheme = self.scheme
+        self.next_scheme()
+        while pattern not in self.scheme.name.lower():
+            if self.scheme == initial_scheme:
+                raise StopIteration
+            self.next_scheme()
+
+    def apply_scheme(self):
         subprocess.check_call([
-            self.apply_script,
-            self.schemes_dir + '/' + scheme,
+            self.repo_dir + '/tools/preview.rb',
+            self.scheme.path,
         ])
 
-    def print_msg(self, msg):
-        sys.stdout.write("\r%s\r%s" % (self.blank, msg))
+    def display(self, string):
+        """
+        Display a string, overwriting previous content.
+        """
+        sys.stdout.write("\r%s\r%s" % (self.blank, string))
 
-    def print_scheme(self, i):
-        scheme_name = self.schemes[i].split('.')[0]
-        self.print_msg("%3d %s" % (i, scheme_name))
-
-    def print_usage(self):
-
+    @property
+    def usage(self):
         def format_set(s):
-            return  '{%s}' % ','.join(sorted(s))
+            return  ''.join(sorted(s))
 
-        print '{next}/{prev} to navigate, {jump} to jump'.format(
-            next=format_set(self.NEXT),
-            prev=format_set(self.PREV),
+        return '{nextprev} to navigate, {jump} to jump'.format(
+            nextprev=format_set(self.NEXT | self.PREV),
             jump=format_set(self.JUMP),
-        ),
+        )
 
 
 def read_character():
@@ -101,8 +130,17 @@ def read_character():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 
+def error(msg):
+    print >>sys.stderr, msg
+    exit(1)
+
+
+def warn(msg):
+    print >>sys.stderr, msg
+
+
 def main():
-    ColorSchemeChooser().run()
+    ColorSchemeBrowser().browse()
 
 
 if __name__ == '__main__':
