@@ -77,6 +77,7 @@ class ColorSchemeBrowser(object):
 
         readline.set_completer(SimpleCompleter(s.name for s in self.schemes)
                                .complete)
+        readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
 
         # A blank string that is long enough to conceal all other output
