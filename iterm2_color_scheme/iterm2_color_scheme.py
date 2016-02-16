@@ -12,8 +12,6 @@ import termios
 import tty
 
 
-UP_ARROW = '\x1b[A'
-
 logging.basicConfig(
     filename='/tmp/iterm2-color-scheme.log',
     level=logging.DEBUG,
@@ -99,7 +97,6 @@ class ColorSchemeBrowser(object):
 
         self.display(self.usage)
 
-        prev_pattern = None
         while True:
             key = read_character()
             if key in self.NEXT:
@@ -109,16 +106,6 @@ class ColorSchemeBrowser(object):
             elif key in self.JUMP_TO_POSITION:
                 self.display('')
                 pattern = raw_input(':')
-
-                if pattern == UP_ARROW:
-                   if prev_pattern:
-                       pattern = prev_pattern
-                   else:
-                       self.display(self.usage)
-                       continue
-                else:
-                    prev_pattern = pattern
-
                 try:
                     self.jump_to_position(int(pattern))
                 except ValueError:
@@ -127,16 +114,6 @@ class ColorSchemeBrowser(object):
             elif key in self.JUMP_TO_NAME:
                 self.display('')
                 pattern = raw_input('/')
-
-                if pattern == UP_ARROW:
-                   if prev_pattern:
-                       pattern = prev_pattern
-                   else:
-                       self.display(self.usage)
-                       continue
-                else:
-                    prev_pattern = pattern
-
                 try:
                     self.jump_to_name(pattern)
                 except StopIteration:
