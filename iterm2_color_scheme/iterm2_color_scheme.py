@@ -27,7 +27,7 @@ class SimpleCompleter(object):
             if text:
                 self.matches = [s
                                 for s in self.options
-                                if s and s.startswith(text)]
+                                if s and text.lower() in s.lower()]
                 logging.debug('%s matches: %s', repr(text), self.matches)
             else:
                 self.matches = self.options[:]
