@@ -81,6 +81,13 @@ class ColorSchemeBrowser(object):
 
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.completer = SimpleCompleter(None, [self.apply_scheme])
+        readline.set_completer(self.completer.complete)
+        readline.set_completer_delims('')
+        readline.parse_and_bind('tab: complete')
+        readline.parse_and_bind('j: menu-complete')
+        readline.parse_and_bind('set completion-ignore-case on')
+        readline.parse_and_bind('set completion-query-items -1')
+        readline.parse_and_bind('k: "j\n"')
 
     def browse(self):
         """
@@ -93,14 +100,6 @@ class ColorSchemeBrowser(object):
         while True:
             self.completer.options = [s.name for s in self.schemes
                                       if s.name > self.scheme.name]
-            readline.set_completer(self.completer.complete)
-            readline.set_completer_delims('')
-            readline.parse_and_bind('tab: complete')
-            readline.parse_and_bind('j: menu-complete')
-            readline.parse_and_bind('set completion-ignore-case on')
-            readline.parse_and_bind('set completion-query-items -1')
-            readline.parse_and_bind('k: "jn"')
-
             self.scheme = self.name_to_scheme[raw_input()]
             self.apply_scheme()
 
