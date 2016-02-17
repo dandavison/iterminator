@@ -97,8 +97,9 @@ class ColorSchemeBrowser(object):
             readline.set_completer_delims('')
             readline.parse_and_bind('tab: complete')
             readline.parse_and_bind('j: menu-complete')
-            readline.parse_and_bind('set sort_completion_matches 0')
-            readline.parse_and_bind('set sort-completion-matches 0')
+            readline.parse_and_bind('set completion-ignore-case on')
+            readline.parse_and_bind('set completion-query-items -1')
+            readline.parse_and_bind('k: "jn"')
 
             self.scheme = self.name_to_scheme[raw_input()]
             self.apply_scheme()
