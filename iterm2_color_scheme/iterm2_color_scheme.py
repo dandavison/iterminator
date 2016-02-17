@@ -16,8 +16,9 @@ logging.basicConfig(
 
 class SimpleCompleter(object):
 
-    def __init__(self, options):
+    def __init__(self, options, hook_functions):
         self.options = sorted(options)
+        self.hook_functions = hook_functions
 
     def complete(self, text, state):
         if text:
@@ -43,6 +44,11 @@ class SimpleCompleter(object):
             response = self.matches[state]
         except IndexError:
             response = None
+        else:
+            if len(self.matches) == 1:
+                for fn in self.hook_functions:
+                    fn(response)
+
         logging.debug('complete(%s, %s) => %s',
                       repr(text), state, repr(response))
         return response
@@ -73,7 +79,9 @@ class ColorSchemeBrowser(object):
                                        for f in os.listdir(schemes_dir)
                                        if f.endswith('.itermcolors')))
         }
-        completer = SimpleCompleter(s.name for s in self.schemes.values())
+        completer = SimpleCompleter(
+            [s.name for s in self.schemes.values()],
+            [self.apply_scheme])
         readline.set_completer(completer.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
@@ -90,10 +98,11 @@ class ColorSchemeBrowser(object):
             self.scheme = self.schemes[raw_input()]
             self.apply_scheme()
 
-    def apply_scheme(self):
+    def apply_scheme(self, name=None):
+        scheme = self.scheme if name is None else self.schemes[name]
         subprocess.check_call([
             self.repo_dir + '/tools/preview.rb',
-            self.scheme.path,
+            scheme.path,
         ])
 
 
