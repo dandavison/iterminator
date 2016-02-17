@@ -18,7 +18,6 @@ class SimpleCompleter(object):
 
     def __init__(self, options):
         self.options = sorted(options)
-        return
 
     def complete(self, text, state):
         response = None
@@ -69,9 +68,8 @@ class ColorSchemeBrowser(object):
                                        for f in os.listdir(schemes_dir)
                                        if f.endswith('.itermcolors')))
         }
-        readline.set_completer(
-            SimpleCompleter(s.name for s in self.schemes.values())
-            .complete)
+        completer = SimpleCompleter(s.name for s in self.schemes.values())
+        readline.set_completer(completer.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: menu-complete')
 
