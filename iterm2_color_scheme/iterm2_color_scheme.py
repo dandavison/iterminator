@@ -88,7 +88,7 @@ class ColorSchemeBrowser(object):
         """
         if os.getenv('TMUX'):
             error("Please detach from your tmux session "
-                  "before running this script.")
+                  "before running this command.")
 
         while True:
             self.completer.options = [s.name for s in self.schemes
