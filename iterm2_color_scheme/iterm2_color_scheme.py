@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from collections import namedtuple
 from itertools import starmap
+import collections
 import logging
 import os
 import readline
@@ -14,10 +15,15 @@ logging.basicConfig(
 )
 
 
+class deque(collections.deque):
+    def center(self, item):
+        self.rotate(list(self).index(item))
+
+
 class SimpleCompleter(object):
 
     def __init__(self, options, hook_functions):
-        self.options = sorted(options)
+        self.options = options
         self.hook_functions = hook_functions
 
     def complete(self, text, state):
@@ -67,19 +73,14 @@ class ColorSchemeBrowser(object):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
-        self.schemes = {
-            s.name: s
-            for s in starmap(Scheme,
-                             enumerate(schemes_dir + '/' + f
-                                       for f in os.listdir(schemes_dir)
-                                       if f.endswith('.itermcolors')))
-        }
-        completer = SimpleCompleter(
-            [s.name for s in self.schemes.values()],
-            [self.apply_scheme])
-        readline.set_completer(completer.complete)
-        readline.set_completer_delims('')
-        readline.parse_and_bind('tab: menu-complete')
+        self.schemes = deque(starmap(Scheme,
+                                     enumerate(schemes_dir + '/' + f
+                                               for f in os.listdir(schemes_dir)
+                                               if f.endswith('.itermcolors'))))
+        self.scheme = next(iter(self.schemes))
+
+        self.name_to_scheme = {s.name: s for s in self.schemes}
+        self.completer = SimpleCompleter(None, [self.apply_scheme])
 
     def browse(self):
         """
@@ -90,15 +91,26 @@ class ColorSchemeBrowser(object):
                   "before running this script.")
 
         while True:
-            self.scheme = self.schemes[raw_input()]
+            self.completer.options = [s.name for s in self.schemes
+                                      if s.name > self.scheme.name]
+            readline.set_completer(self.completer.complete)
+            readline.set_completer_delims('')
+            readline.parse_and_bind('tab: complete')
+            readline.parse_and_bind('j: menu-complete')
+            readline.parse_and_bind('set sort_completion_matches 0')
+            readline.parse_and_bind('set sort-completion-matches 0')
+
+            self.scheme = self.name_to_scheme[raw_input()]
             self.apply_scheme()
 
     def apply_scheme(self, name=None):
-        scheme = self.scheme if name is None else self.schemes[name]
+        if name is not None:
+            self.scheme = self.name_to_scheme[name]
         subprocess.check_call([
             self.repo_dir + '/tools/preview.rb',
-            scheme.path,
+            self.scheme.path,
         ])
+        self.schemes.center(self.scheme)
 
 
 def error(msg):
