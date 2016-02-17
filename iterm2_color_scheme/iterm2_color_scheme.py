@@ -21,11 +21,6 @@ class SimpleCompleter(object):
         self.hook_functions = hook_functions
 
     def complete(self, text, state):
-        if text:
-            readline.parse_and_bind('tab: menu-complete')
-        else:
-            readline.parse_and_bind('tab: complete')
-
         response = None
         if state == 0:
             # This is the first time for this text, so build a match list.
@@ -84,7 +79,7 @@ class ColorSchemeBrowser(object):
             [self.apply_scheme])
         readline.set_completer(completer.complete)
         readline.set_completer_delims('')
-        readline.parse_and_bind('tab: complete')
+        readline.parse_and_bind('tab: menu-complete')
 
     def browse(self):
         """
