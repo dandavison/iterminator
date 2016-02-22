@@ -81,11 +81,18 @@ class ColorSchemeSelector(object):
         """
         Return matches for current readline input.
         """
-        return [
-            name
-            for name in self.scheme_names
-            if text.lower() in name.lower()
-        ]
+        if text.endswith('$'):
+            text = text[:-1]
+            if text in self.name_to_scheme:
+                return [text]
+            else:
+                return []
+        else:
+            return [
+                name
+                for name in self.scheme_names
+                if text.lower() in name.lower()
+            ]
 
     def apply_scheme(self, name=None):
         """
