@@ -24,6 +24,7 @@ class ColorSchemeSelector(object):
                       if scheme_file.endswith('.itermcolors'))))
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
+        self.scheme = self.schemes[0]
 
         readline.set_completer(self.complete)
         readline.set_completer_delims('')
@@ -38,6 +39,7 @@ class ColorSchemeSelector(object):
         Select a color theme interactively.
         """
         while True:
+            self.set_readline_menu_complete_key_bindings()
             try:
                 self.scheme = self.name_to_scheme[raw_input()]
             except KeyboardInterrupt:
@@ -47,6 +49,18 @@ class ColorSchemeSelector(object):
                 sys.exit(1)
             else:
                 self.apply_scheme()
+
+    def set_readline_menu_complete_key_bindings(self):
+
+        # Bind Down to next->complete->delete->fast-forward-from-beginning
+        # Note that complete will increment self.scheme.index.
+        readline.parse_and_bind(
+            '"\e[B": "\e[C\t\C-a\C-k%s"' % ('\e[C' * (self.scheme.index + 1)))
+
+        # Bind Up to prev->complete->delete->fast-forward-from-beginning
+        # Note that complete will decrement self.scheme.index.
+        readline.parse_and_bind(
+            '"\e[A": "\e[D\t\C-a\C-k%s"' % ('\e[C' * (self.scheme.index - 1)))
 
     def complete(self, text, state):
         """
@@ -68,6 +82,7 @@ class ColorSchemeSelector(object):
                     # Unique match; apply scheme and return the completion
                     [completion] = self.current_matches
                     self.apply_scheme(completion)
+                    self.set_readline_menu_complete_key_bindings()
                     return completion
             else:
                 self.current_matches = self.scheme_names
