@@ -72,28 +72,28 @@ class ColorSchemeSelector(object):
                 self.apply_scheme()
 
     def complete(self, text, state):
-        response = None
         if state == 0:
             if text:
                 self.current_matches = [s
-                                for s in self.scheme_names
-                                if s and text.lower() in s.lower()]
+                                        for s in self.scheme_names
+                                        if s and text.lower() in s.lower()]
                 logging.debug('%s current_matches: %s', repr(text), self.current_matches)
+
+                if len(self.current_matches) == 1:
+                    [completion] = self.current_matches
+                    self.apply_scheme(completion)
+                    return completion
             else:
                 self.current_matches = self.scheme_names
                 logging.debug('(empty input) current_matches: %s', self.current_matches)
-
         try:
-            response = self.current_matches[state]
+            completion = self.current_matches[state]
         except IndexError:
-            response = None
-        else:
-            if len(self.current_matches) == 1:
-                self.apply_scheme(response)
+            completion = None
 
         logging.debug('complete(%s, %s) => %s',
-                      repr(text), state, repr(response))
-        return response
+                      repr(text), state, repr(completion))
+        return completion
 
 
     def apply_scheme(self, name=None):
