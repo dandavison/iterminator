@@ -8,6 +8,11 @@ import subprocess
 import sys
 
 
+def log(msg):
+    with open('/tmp/log', 'a') as fp:
+        fp.write(msg)
+
+
 class ColorSchemeSelector(object):
     """
     An interactive iTerm2 color scheme selector.
@@ -31,13 +36,14 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('tab: complete')
         readline.parse_and_bind('set completion-ignore-case on')
         readline.parse_and_bind('set completion-query-items -1')
-        readline.parse_and_bind('"\e[C": menu-complete')
-        readline.parse_and_bind('"\e[D": menu-complete-backward')
+        readline.parse_and_bind(r'"\e[C": menu-complete')
+        readline.parse_and_bind(r'"\e[D": menu-complete-backward')
 
     def select(self):
         """
         Select a color theme interactively.
         """
+        log("hello")
         while True:
             self.set_readline_menu_complete_key_bindings()
             try:
@@ -55,12 +61,12 @@ class ColorSchemeSelector(object):
         # Bind Down to next->complete->delete->fast-forward-from-beginning
         # Note that complete will increment self.scheme.index.
         readline.parse_and_bind(
-            '"\e[B": "\e[C\t\C-a\C-k%s"' % ('\e[C' * (self.scheme.index + 1)))
+            r'"\e[B": "\e[C\t\C-a\C-k%s"' % (r'\e[C' * (self.scheme.index + 2)))
 
         # Bind Up to prev->complete->delete->fast-forward-from-beginning
         # Note that complete will decrement self.scheme.index.
         readline.parse_and_bind(
-            '"\e[A": "\e[D\t\C-a\C-k%s"' % ('\e[C' * (self.scheme.index - 1)))
+            r'"\e[A": "\e[D\t\C-a\C-k%s"' % (r'\e[C' * (self.scheme.index + 3)))
 
     def complete(self, text, state):
         """
@@ -81,7 +87,9 @@ class ColorSchemeSelector(object):
                 if len(self.current_matches) == 1:
                     # Unique match; apply scheme and return the completion
                     [completion] = self.current_matches
+                    log("(%d, %s) -> " % (self.scheme.index, self.scheme.name))
                     self.apply_scheme(completion)
+                    log("(%d, %s)\n" % (self.scheme.index, self.scheme.name))
                     self.set_readline_menu_complete_key_bindings()
                     return completion
             else:
@@ -124,7 +132,7 @@ class Scheme(namedtuple('Scheme', ['index', 'path'])):
         return os.path.basename(self.path).split('.')[0]
 
     def __repr__(self):
-        return self.name
+        return "(%d, %s)" % self
 
 
 def main():
