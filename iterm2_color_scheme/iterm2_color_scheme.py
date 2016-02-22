@@ -1,15 +1,8 @@
 #!/usr/bin/env python
-import logging
 import os
 import readline
 import subprocess
 import sys
-
-
-logging.basicConfig(
-    filename='/tmp/iterm2-color-scheme.log',
-    level=logging.DEBUG,
-)
 
 
 class Scheme(object):
@@ -84,7 +77,6 @@ class ColorSchemeSelector(object):
             # First call for current input; compute and cache completions
             if text:
                 self.current_matches = self.get_matches(text)
-                logging.debug('%s current_matches: %s', repr(text), self.current_matches)
 
                 if len(self.current_matches) == 1:
                     # Unique match; apply scheme and return the completion
@@ -93,14 +85,11 @@ class ColorSchemeSelector(object):
                     return completion
             else:
                 self.current_matches = self.scheme_names
-                logging.debug('(empty input) current_matches: %s', self.current_matches)
         try:
             completion = self.current_matches[state]
         except IndexError:
             completion = None
 
-        logging.debug('complete(%s, %s) => %s',
-                      repr(text), state, repr(completion))
         return completion
 
     def get_matches(self, text):
