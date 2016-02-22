@@ -106,8 +106,6 @@ class ColorSchemeBrowser(object):
                 sys.exit(0)
             except KeyError:
                 sys.exit(1)
-            else:
-                self.apply_scheme()
 
     def apply_scheme(self, name=None):
         if name is not None:
