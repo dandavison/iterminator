@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-from collections import namedtuple
-from itertools import starmap
-import collections
 import logging
 import os
 import readline
@@ -15,21 +12,19 @@ logging.basicConfig(
 )
 
 
-class deque(collections.deque):
-    def center(self, item):
-        self.rotate(list(self).index(item))
-
-
-class Scheme(namedtuple('Scheme', ['index', 'path'])):
+class Scheme(object):
     """
     An iTerm2 color scheme file.
     """
+    def __init__(self, path):
+        self.path = path
+
     @property
     def name(self):
         return os.path.basename(self.path).split('.')[0]
 
     def __repr__(self):
-        return "%3d %s" % (self.index, self.name)
+        return self.name
 
 
 class ColorSchemeSelector(object):
@@ -38,11 +33,9 @@ class ColorSchemeSelector(object):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
-        self.schemes = deque(starmap(Scheme,
-                                     enumerate(schemes_dir + '/' + f
-                                               for f in os.listdir(schemes_dir)
-                                               if f.endswith('.itermcolors'))))
-        self.scheme = next(iter(self.schemes))
+        self.schemes = [Scheme(schemes_dir + '/' + f)
+                        for f in os.listdir(schemes_dir)
+                        if f.endswith('.itermcolors')]
 
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
@@ -117,7 +110,6 @@ class ColorSchemeSelector(object):
             self.repo_dir + '/tools/preview.rb',
             self.scheme.path,
         ])
-        self.schemes.center(self.scheme)
 
 
 def error(msg):
