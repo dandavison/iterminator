@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import os
 import readline
 import subprocess
@@ -120,7 +121,45 @@ def error(msg):
 
 
 def main():
-    ColorSchemeSelector().select()
+    selector = ColorSchemeSelector()
+    padding = ' ' * 100
+    arg_parser = argparse.ArgumentParser(
+        description=("Color theme selector for iTerm2. Use TAB to complete "
+                     "color scheme names, or supply one of the command-line "
+                     "arguments."),
+        epilog=(
+            "The color schemes are from "
+            "https://github.com/mbadolato/iTerm2-Color-Schemes, which is "
+            "included as a git submodule in this project. All credit for the "
+            "schemes goes to the original scheme authors and to the "
+            "iTerm2-Color-Schemes project. To add a new scheme, please first "
+            "create a pull request against iTerm2-Color-Schemes to add your "
+            "scheme, and then open a pull request or issue against "
+            "https://github.com/dandavison/iterm2-color-scheme to update the "
+            "submodule."),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+
+    arg_parser.add_argument(
+        '-l', '--list', action='store_true',
+        help="List available color schemes",
+    )
+
+    arg_parser.add_argument(
+        '--scheme',
+        metavar='scheme',
+        help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
+    )
+
+    args = arg_parser.parse_args()
+
+    if args.list:
+        for name in selector.scheme_names:
+            print name
+    elif args.scheme:
+        selector.apply_scheme(args.scheme)
+    else:
+        selector.select()
 
 
 if __name__ == '__main__':
