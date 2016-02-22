@@ -72,7 +72,18 @@ class ColorSchemeSelector(object):
                 self.apply_scheme()
 
     def complete(self, text, state):
+        """
+        Return state'th completion for current input.
+
+        This is the standard readline completion function.
+        https://docs.python.org/2/library/readline.html
+
+        text: the current input
+        state: an integer specifying which of the matches for the current input
+               should be returned
+        """
         if state == 0:
+            # First call for current input; compute and cache completions
             if text:
                 self.current_matches = [s
                                         for s in self.scheme_names
@@ -97,6 +108,9 @@ class ColorSchemeSelector(object):
 
 
     def apply_scheme(self, name=None):
+        """
+        Apply current scheme to current iTerm2 session.
+        """
         if name is not None:
             self.scheme = self.name_to_scheme[name]
         subprocess.check_call([
