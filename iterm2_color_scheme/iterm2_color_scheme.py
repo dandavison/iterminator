@@ -67,7 +67,7 @@ class Scheme(namedtuple('Scheme', ['index', 'path'])):
         return "%3d %s" % (self.index, self.name)
 
 
-class ColorSchemeBrowser(object):
+class ColorSchemeSelector(object):
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
@@ -90,7 +90,7 @@ class ColorSchemeBrowser(object):
         readline.parse_and_bind('set completion-query-items -1')
         readline.parse_and_bind('k: "j\n"')
 
-    def browse(self):
+    def select(self):
         """
         Select a color theme interactively.
         """
@@ -123,7 +123,7 @@ def error(msg):
 
 
 def main():
-    ColorSchemeBrowser().browse()
+    ColorSchemeSelector().select()
 
 
 if __name__ == '__main__':
