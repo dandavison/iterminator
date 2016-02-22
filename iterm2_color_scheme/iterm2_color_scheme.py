@@ -28,7 +28,6 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('tab: complete')
         readline.parse_and_bind('set completion-ignore-case on')
         readline.parse_and_bind('set completion-query-items -1')
-        readline.parse_and_bind('set show-all-if-ambiguous on')
 
     def select(self):
         """
