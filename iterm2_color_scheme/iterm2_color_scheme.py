@@ -165,7 +165,7 @@ def main():
         selector.apply_scheme(args.scheme)
     else:
         if not args.quiet:
-            sys.stdout.write('TAB/left/right to select color schemes\n')
+            sys.stdout.write('Tab to complete color scheme names\n')
         selector.select()
 
 
