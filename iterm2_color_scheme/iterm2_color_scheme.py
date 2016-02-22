@@ -45,7 +45,7 @@ class ColorSchemeSelector(object):
         self.scheme = next(iter(self.schemes))
 
         self.name_to_scheme = {s.name: s for s in self.schemes}
-        self.completion_options = [s.name for s in self.schemes]
+        self.scheme_names = [s.name for s in self.schemes]
         readline.set_completer(self.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
@@ -74,24 +74,21 @@ class ColorSchemeSelector(object):
     def complete(self, text, state):
         response = None
         if state == 0:
-            # This is the first time for this text, so build a match list.
             if text:
-                self.matches = [s
-                                for s in self.completion_options
+                self.current_matches = [s
+                                for s in self.scheme_names
                                 if s and text.lower() in s.lower()]
-                logging.debug('%s matches: %s', repr(text), self.matches)
+                logging.debug('%s current_matches: %s', repr(text), self.current_matches)
             else:
-                self.matches = self.completion_options[:]
-                logging.debug('(empty input) matches: %s', self.matches)
+                self.current_matches = self.scheme_names
+                logging.debug('(empty input) current_matches: %s', self.current_matches)
 
-        # Return the state'th item from the match list,
-        # if we have that many.
         try:
-            response = self.matches[state]
+            response = self.current_matches[state]
         except IndexError:
             response = None
         else:
-            if len(self.matches) == 1:
+            if len(self.current_matches) == 1:
                 self.apply_scheme(response)
 
         logging.debug('complete(%s, %s) => %s',
