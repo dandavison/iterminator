@@ -14,7 +14,7 @@ logging.basicConfig(
 
 class Scheme(object):
     """
-    An iTerm2 color scheme file.
+    An iTerm2 color scheme.
     """
     def __init__(self, path):
         self.path = path
@@ -28,14 +28,19 @@ class Scheme(object):
 
 
 class ColorSchemeSelector(object):
+    """
+    An interactive iTerm2 color scheme selector.
+    """
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
-        self.schemes = [Scheme(schemes_dir + '/' + f)
-                        for f in os.listdir(schemes_dir)
-                        if f.endswith('.itermcolors')]
+        self.schemes = [
+            Scheme(os.path.join(schemes_dir, scheme_file))
+            for scheme_file in os.listdir(schemes_dir)
+            if scheme_file.endswith('.itermcolors')
+        ]
 
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
@@ -78,12 +83,11 @@ class ColorSchemeSelector(object):
         if state == 0:
             # First call for current input; compute and cache completions
             if text:
-                self.current_matches = [s
-                                        for s in self.scheme_names
-                                        if s and text.lower() in s.lower()]
+                self.current_matches = self.get_matches(text)
                 logging.debug('%s current_matches: %s', repr(text), self.current_matches)
 
                 if len(self.current_matches) == 1:
+                    # Unique match; apply scheme and return the completion
                     [completion] = self.current_matches
                     self.apply_scheme(completion)
                     return completion
@@ -99,6 +103,15 @@ class ColorSchemeSelector(object):
                       repr(text), state, repr(completion))
         return completion
 
+    def get_matches(self, text):
+        """
+        Return matches for current readline input.
+        """
+        return [
+            name
+            for name in self.scheme_names
+            if text.lower() in name.lower()
+        ]
 
     def apply_scheme(self, name=None):
         """
