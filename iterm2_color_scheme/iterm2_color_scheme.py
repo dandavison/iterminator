@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from collections import namedtuple
+from itertools import starmap
 import argparse
 import os
 import readline
@@ -15,11 +17,11 @@ class ColorSchemeSelector(object):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
-        self.schemes = [
-            Scheme(os.path.join(schemes_dir, scheme_file))
-            for scheme_file in os.listdir(schemes_dir)
-            if scheme_file.endswith('.itermcolors')
-        ]
+        self.schemes = list(starmap(
+            Scheme,
+            enumerate(os.path.join(schemes_dir, scheme_file)
+                      for scheme_file in os.listdir(schemes_dir)
+                      if scheme_file.endswith('.itermcolors'))))
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
 
@@ -98,13 +100,10 @@ class ColorSchemeSelector(object):
         ])
 
 
-class Scheme(object):
+class Scheme(namedtuple('Scheme', ['index', 'path'])):
     """
     An iTerm2 color scheme.
     """
-    def __init__(self, path):
-        self.path = path
-
     @property
     def name(self):
         return os.path.basename(self.path).split('.')[0]
