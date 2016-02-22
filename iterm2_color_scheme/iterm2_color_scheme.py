@@ -49,10 +49,8 @@ class ColorSchemeSelector(object):
         readline.set_completer(self.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
-        readline.parse_and_bind('j: menu-complete')
         readline.parse_and_bind('set completion-ignore-case on')
         readline.parse_and_bind('set completion-query-items -1')
-        readline.parse_and_bind('k: "j\n"')
 
     def select(self):
         """
