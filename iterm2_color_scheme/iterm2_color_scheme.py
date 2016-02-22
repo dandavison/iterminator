@@ -48,10 +48,6 @@ class ColorSchemeSelector(object):
         """
         Select a color theme interactively.
         """
-        if os.getenv('TMUX'):
-            error("Please detach from your tmux session "
-                  "before running this command.")
-
         while True:
             try:
                 self.scheme = self.name_to_scheme[raw_input()]
@@ -115,12 +111,13 @@ class ColorSchemeSelector(object):
         ])
 
 
-def error(msg):
-    print >>sys.stderr, msg
-    exit(1)
-
-
 def main():
+    if os.getenv('TMUX'):
+        print >>sys.stderr, (
+            "Please detach from your tmux session before running this command."
+        )
+        sys.exit(1)
+
     selector = ColorSchemeSelector()
     padding = ' ' * 100
     arg_parser = argparse.ArgumentParser(
