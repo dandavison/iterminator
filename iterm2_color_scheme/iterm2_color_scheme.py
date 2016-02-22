@@ -81,6 +81,7 @@ class ColorSchemeBrowser(object):
 
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.completer = SimpleCompleter(None, [self.apply_scheme])
+        self.completer.options = [s.name for s in self.schemes]
         readline.set_completer(self.completer.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
@@ -98,8 +99,6 @@ class ColorSchemeBrowser(object):
                   "before running this command.")
 
         while True:
-            self.completer.options = [s.name for s in self.schemes
-                                      if s.name > self.scheme.name]
             self.scheme = self.name_to_scheme[raw_input()]
             self.apply_scheme()
 
