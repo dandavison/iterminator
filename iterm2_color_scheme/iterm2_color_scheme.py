@@ -6,21 +6,6 @@ import subprocess
 import sys
 
 
-class Scheme(object):
-    """
-    An iTerm2 color scheme.
-    """
-    def __init__(self, path):
-        self.path = path
-
-    @property
-    def name(self):
-        return os.path.basename(self.path).split('.')[0]
-
-    def __repr__(self):
-        return self.name
-
-
 class ColorSchemeSelector(object):
     """
     An interactive iTerm2 color scheme selector.
@@ -35,9 +20,9 @@ class ColorSchemeSelector(object):
             for scheme_file in os.listdir(schemes_dir)
             if scheme_file.endswith('.itermcolors')
         ]
-
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
+
         readline.set_completer(self.complete)
         readline.set_completer_delims('')
         readline.parse_and_bind('tab: complete')
@@ -109,6 +94,21 @@ class ColorSchemeSelector(object):
             self.repo_dir + '/tools/preview.rb',
             self.scheme.path,
         ])
+
+
+class Scheme(object):
+    """
+    An iTerm2 color scheme.
+    """
+    def __init__(self, path):
+        self.path = path
+
+    @property
+    def name(self):
+        return os.path.basename(self.path).split('.')[0]
+
+    def __repr__(self):
+        return self.name
 
 
 def main():
