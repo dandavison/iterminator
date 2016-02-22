@@ -150,6 +150,11 @@ def main():
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
 
+    arg_parser.add_argument(
+        '-q', '--quiet', action='store_true',
+        help="Don't display initial key bindings help message.",
+    )
+
     args = arg_parser.parse_args()
 
     if args.list:
@@ -158,6 +163,8 @@ def main():
     elif args.scheme:
         selector.apply_scheme(args.scheme)
     else:
+        if not args.quiet:
+            sys.stdout.write('TAB/left/right to select color schemes\n')
         selector.select()
 
 
