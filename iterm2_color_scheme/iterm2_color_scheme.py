@@ -99,8 +99,15 @@ class ColorSchemeBrowser(object):
                   "before running this command.")
 
         while True:
-            self.scheme = self.name_to_scheme[raw_input()]
-            self.apply_scheme()
+            try:
+                self.scheme = self.name_to_scheme[raw_input()]
+            except KeyboardInterrupt:
+                sys.stdout.write('\n')
+                sys.exit(0)
+            except KeyError:
+                sys.exit(1)
+            else:
+                self.apply_scheme()
 
     def apply_scheme(self, name=None):
         if name is not None:
