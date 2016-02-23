@@ -172,13 +172,13 @@ def main():
     elif args.scheme:
         schemes = selector.get_matches(args.scheme)
         if len(schemes) == 0:
-            error("No matching scheme")
+            error("No matches")
         elif len(schemes) == 1:
             [scheme] = schemes
             print scheme
             selector.apply_scheme(scheme)
         elif len(schemes) > 1:
-            error("Multiple matching schemes: %s" % ', '.join(schemes))
+            error("Multiple matches: %s" % ', '.join(schemes))
 
     else:
         if not args.quiet:
