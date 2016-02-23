@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from collections import deque
+from time import sleep
 import argparse
 import os
 import readline
@@ -31,6 +33,17 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('set show-all-if-ambiguous on')
         readline.parse_and_bind('"\e[C": menu-complete')
         readline.parse_and_bind('"\e[D": menu-complete-backward')
+
+    def animate(self, animate_interval):
+        blank = ' ' * max(len(s.name) for s in self.schemes)
+        schemes = deque(self.schemes)
+        while True:
+            scheme = schemes[0].name
+            self.apply_scheme(scheme)
+            sys.stdout.write('\r%s\r%s' % (blank, scheme))
+            sys.stdout.flush()
+            schemes.rotate(1)
+            sleep(animate_interval)
 
     def select(self):
         """
@@ -148,6 +161,15 @@ def main():
     )
 
     arg_parser.add_argument(
+        '-a', '--animate',
+        nargs='?',
+        type=float,
+        const=1.0,
+        help=("Cycle through color schemes automatically "
+              "(optionally followed by pause duration in seconds)"),
+    )
+
+    arg_parser.add_argument(
         '-l', '--list', action='store_true',
         help="List available color schemes",
     )
@@ -168,6 +190,12 @@ def main():
     if args.list:
         for name in selector.scheme_names:
             print name
+    elif args.animate:
+        try:
+            selector.animate(args.animate)
+        except KeyboardInterrupt:
+            print
+            sys.exit(0)
     elif args.scheme:
         schemes = selector.get_matches(args.scheme)
         if len(schemes) == 0:
