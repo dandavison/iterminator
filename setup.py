@@ -7,7 +7,7 @@ setup(
     version='0.0.2',
     author='Dan Davison',
     author_email='dandavison7@gmail.com',
-    description="Fast color scheme selector for iTerm2",
+    description="Command-line color scheme selector for iTerm2",
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

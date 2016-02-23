@@ -40,7 +40,7 @@ class ColorSchemeSelector(object):
             try:
                 self.scheme = self.name_to_scheme[raw_input()]
             except KeyboardInterrupt:
-                sys.stdout.write('\n')
+                print
                 sys.exit(0)
             except KeyError:
                 sys.exit(1)
@@ -128,7 +128,6 @@ def main():
         )
 
     selector = ColorSchemeSelector()
-    padding = ' ' * 100
     arg_parser = argparse.ArgumentParser(
         description=(
             "Color theme selector for iTerm2.\n\n"
@@ -179,10 +178,9 @@ def main():
             selector.apply_scheme(scheme)
         elif len(schemes) > 1:
             error("Multiple matches: %s" % ', '.join(schemes))
-
     else:
         if not args.quiet:
-            sys.stdout.write('Tab to complete color scheme names\n')
+            print 'Tab to complete color scheme names'
         selector.select()
 
 
