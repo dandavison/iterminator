@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='iterm2-color-scheme',
-    version='0.0.2',
+    version='0.0.3',
     author='Dan Davison',
     author_email='dandavison7@gmail.com',
     description="Command-line color scheme selector for iTerm2",
