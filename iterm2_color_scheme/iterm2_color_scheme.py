@@ -170,7 +170,16 @@ def main():
         for name in selector.scheme_names:
             print name
     elif args.scheme:
-        selector.apply_scheme(args.scheme)
+        schemes = selector.get_matches(args.scheme)
+        if len(schemes) == 0:
+            error("No matching scheme")
+        elif len(schemes) == 1:
+            [scheme] = schemes
+            print scheme
+            selector.apply_scheme(scheme)
+        elif len(schemes) > 1:
+            error("Multiple matching schemes: %s" % ', '.join(schemes))
+
     else:
         if not args.quiet:
             sys.stdout.write('Tab to complete color scheme names\n')
