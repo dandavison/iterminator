@@ -170,18 +170,19 @@ def main():
     )
 
     arg_parser.add_argument(
-        '-l', '--list', action='store_true',
+        '-l', '--list',
+        action='store_true',
         help="List available color schemes",
     )
 
     arg_parser.add_argument(
-        '-q', '--quiet', action='store_true',
-        help="Don't display initial key bindings help message.",
+        '-q', '--quiet',
+        action='store_true',
+        help="Don't display initial key bindings help message",
     )
 
     arg_parser.add_argument(
         '-s', '--scheme',
-        metavar='scheme',
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
 
@@ -194,8 +195,8 @@ def main():
             print
             sys.exit(0)
     elif args.list:
-        for name in selector.scheme_names:
-            print name
+        for scheme in selector.scheme_names:
+            print scheme
     elif args.scheme:
         schemes = selector.get_matches(args.scheme)
         if len(schemes) == 0:
