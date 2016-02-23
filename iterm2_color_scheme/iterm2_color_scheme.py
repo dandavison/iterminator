@@ -153,7 +153,7 @@ def main():
     )
 
     arg_parser.add_argument(
-        '--scheme',
+        '-s', '--scheme',
         metavar='scheme',
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
