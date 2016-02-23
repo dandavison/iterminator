@@ -35,9 +35,11 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('"\e[C": menu-complete')
         readline.parse_and_bind('"\e[D": menu-complete-backward')
 
-    def animate(self, animate_interval):
+    def animate(self, animate_interval, shuffle):
         blank = ' ' * max(len(s.name) for s in self.schemes)
         schemes = deque(self.schemes)
+        if shuffle:
+            random.shuffle(schemes)
         while True:
             scheme = schemes[0].name
             self.apply_scheme(scheme)
@@ -197,7 +199,7 @@ def main():
 
     if args.animate:
         try:
-            selector.animate(args.animate)
+            selector.animate(args.animate, args.random)
         except KeyboardInterrupt:
             print
             sys.exit(0)
