@@ -131,9 +131,11 @@ def main():
     selector = ColorSchemeSelector()
     padding = ' ' * 100
     arg_parser = argparse.ArgumentParser(
-        description=("Color theme selector for iTerm2. Use TAB and left/right "
-                     "arrows to select color scheme names, or supply one of "
-                     "the command-line arguments."),
+        description=(
+            "Color theme selector for iTerm2.\n\n"
+            "With no arguments, the command runs in interactive mode: use tab "
+            "to complete color scheme names (other standard readline key "
+            "bindings are also available)."),
         epilog=(
             "The color schemes are from "
             "https://github.com/mbadolato/iTerm2-Color-Schemes, which is "
