@@ -187,15 +187,15 @@ def main():
 
     args = arg_parser.parse_args()
 
-    if args.list:
-        for name in selector.scheme_names:
-            print name
-    elif args.animate:
+    if args.animate:
         try:
             selector.animate(args.animate)
         except KeyboardInterrupt:
             print
             sys.exit(0)
+    elif args.list:
+        for name in selector.scheme_names:
+            print name
     elif args.scheme:
         schemes = selector.get_matches(args.scheme)
         if len(schemes) == 0:
