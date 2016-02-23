@@ -153,14 +153,14 @@ def main():
     )
 
     arg_parser.add_argument(
-        '-s', '--scheme',
-        metavar='scheme',
-        help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
+        '-q', '--quiet', action='store_true',
+        help="Don't display initial key bindings help message.",
     )
 
     arg_parser.add_argument(
-        '-q', '--quiet', action='store_true',
-        help="Don't display initial key bindings help message.",
+        '-s', '--scheme',
+        metavar='scheme',
+        help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
 
     args = arg_parser.parse_args()
