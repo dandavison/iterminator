@@ -123,10 +123,9 @@ class Scheme(object):
 
 def main():
     if os.getenv('TMUX'):
-        print >>sys.stderr, (
+        error(
             "Please detach from your tmux session before running this command."
         )
-        sys.exit(1)
 
     selector = ColorSchemeSelector()
     padding = ' ' * 100
@@ -176,6 +175,11 @@ def main():
         if not args.quiet:
             sys.stdout.write('Tab to complete color scheme names\n')
         selector.select()
+
+
+def error(msg):
+    print >>sys.stderr, msg
+    sys.exit(1)
 
 
 if __name__ == '__main__':
