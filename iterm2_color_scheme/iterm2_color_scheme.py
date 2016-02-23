@@ -4,6 +4,7 @@ from time import sleep
 import argparse
 import os
 import readline
+import random
 import subprocess
 import sys
 
@@ -182,6 +183,12 @@ def main():
     )
 
     arg_parser.add_argument(
+        '-r', '--random',
+        action='store_true',
+        help="Select a random color scheme"
+    )
+
+    arg_parser.add_argument(
         '-s', '--scheme',
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
@@ -197,6 +204,10 @@ def main():
     elif args.list:
         for scheme in selector.scheme_names:
             print scheme
+    elif args.random:
+        scheme = random.choice(selector.scheme_names)
+        print scheme
+        selector.apply_scheme(scheme)
     elif args.scheme:
         schemes = selector.get_matches(args.scheme)
         if len(schemes) == 0:
