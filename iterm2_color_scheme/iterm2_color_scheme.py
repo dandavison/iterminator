@@ -86,7 +86,7 @@ class ColorSchemeSelector(object):
         sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
         sys.stdout.flush()
 
-    def animate(self, animate_interval, shuffle):
+    def animate(self, speed, shuffle):
         if shuffle:
             self.shuffle()
         self.animation_control.start()
@@ -100,7 +100,7 @@ class ColorSchemeSelector(object):
                 self.schemes.rotate(-1)
                 self.apply()
                 self.tell()
-                sleep(animate_interval)
+                sleep(1.0 / speed)
 
     def animation_control(self):
         while True:
@@ -219,15 +219,15 @@ def parse_arguments():
     )
 
     arg_parser.add_argument(
-        '-a', '--animate',
-        metavar='pause duration',
+        '-a', '--animation-speed',
         nargs='?',
+        metavar='speed',
         type=float,
         const=1.0,
         help=("Cycle through color schemes automatically.\n"
               "This is the default mode when no arguments are supplied.\n"
-              "This argument can be used to specify the duration in seconds "
-              "of the pause before changing scheme\n"
+              "This argument can be used to specify the animation speed "
+              "(schemes/second)\n"
               "Key bindings in animation mode:\n"
               "space  - pause/unpause\n"
               "j      - next scheme\n"
@@ -285,10 +285,10 @@ def main():
     selector = ColorSchemeSelector()
     args = parse_arguments()
 
-    if args.animate:
+    if args.animation_speed:
 
         try:
-            selector.animate(args.animate, args.random)
+            selector.animate(args.animation_speed, args.random)
         except KeyboardInterrupt:
             print
             sys.exit(0)
