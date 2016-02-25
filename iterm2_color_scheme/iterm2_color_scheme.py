@@ -18,18 +18,26 @@ class ColorSchemeSelector(object):
     """
     # Animation control keys
     PAUSE = ' '
+    NEXT = 'j'
+    PREV = 'k'
+    QUIT = '\r'
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
-        self.schemes = [
+        self.schemes = deque(
             Scheme(os.path.join(schemes_dir, scheme_file))
             for scheme_file in os.listdir(schemes_dir)
             if scheme_file.endswith('.itermcolors')
-        ]
+        )
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
+        self.blank = ' ' * max(len(s.name) for s in self.schemes)
+
+        self.animation_control = Thread(target=self.animation_control)
+        self.paused = False
+        self.quitting = False
 
         readline.set_completer(self.complete)
         readline.set_completer_delims('')
@@ -41,29 +49,47 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('"\e[D": menu-complete-backward')
 
     def animate(self, animate_interval, shuffle):
-        blank = ' ' * max(len(s.name) for s in self.schemes)
-        schemes = deque(self.schemes)
         if shuffle:
-            random.shuffle(schemes)
-        schemes.rotate(-1)
-        self.paused = False
-        Thread(target=self.animation_control).start()
+            random.shuffle(self.schemes)
+        self.animation_control.start()
+        self.schemes.rotate(+1)
         while True:
-            if self.paused:
+            if self.quitting:
+                self.quit()
+            elif self.paused:
                 sleep(0.1)
             else:
-                schemes.rotate(1)
-                scheme = schemes[0].name
+                self.schemes.rotate(-1)
+                scheme = self.schemes[0].name
                 self.apply_scheme(scheme)
-                sys.stdout.write('\r%s\r%s' % (blank, scheme))
-                sys.stdout.flush()
+                self.display_scheme()
                 sleep(animate_interval)
+
+    def display_scheme(self):
+        sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
+        sys.stdout.flush()
 
     def animation_control(self):
         while True:
             char = getch()
             if char == self.PAUSE:
                 self.paused = not self.paused
+            elif char == self.NEXT:
+                self.schemes.rotate(-1)
+                self.apply_scheme()
+                self.display_scheme()
+            elif char == self.PREV:
+                self.schemes.rotate(+1)
+                self.apply_scheme()
+                self.display_scheme()
+            elif char == self.QUIT:
+                self.quitting = True
+                break
+
+    def quit(self):
+        self.animation_control.join()
+        print
+        sys.exit(0)
 
     def select(self):
         """
@@ -133,6 +159,8 @@ class ColorSchemeSelector(object):
         """
         if name is not None:
             self.scheme = self.name_to_scheme[name]
+        else:
+            self.scheme = self.schemes[0]
         subprocess.check_call([
             self.repo_dir + '/tools/preview.rb',
             self.scheme.path,
