@@ -37,7 +37,8 @@ class ColorSchemeSelector(object):
     PREV = {'k', 'p'}
     QUIT = {'q', '\r', '\x03'}  # q, return, ctrl-c
 
-    def __init__(self):
+    def __init__(self, quiet=True):
+        self.quiet = quiet
         self.repo_dir = os.path.join(os.path.dirname(__file__),
                                      'iTerm2-Color-Schemes')
         schemes_dir = self.repo_dir + '/schemes'
@@ -79,6 +80,12 @@ class ColorSchemeSelector(object):
             self.repo_dir + '/tools/preview.rb',
             self.scheme.path,
         ])
+
+    def say(self, msg):
+        if not self.quiet:
+            if len(msg) > len(self.blank):
+                self.blank = ' ' * len(msg)
+            sys.stdout.write(msg)
 
     def tell(self):
         sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
@@ -284,8 +291,8 @@ def main():
             "Please detach from your tmux session before running this command."
         )
 
-    selector = ColorSchemeSelector()
     args = parse_arguments()
+    selector = ColorSchemeSelector(quiet=args.quiet)
 
     if args.animation_speed:
 
@@ -297,8 +304,7 @@ def main():
 
     if args.interactive:
 
-        if not args.quiet:
-            print 'Tab to complete color scheme names'
+        selector.say('Tab to complete color scheme names\n')
         selector.select()
 
     elif args.list:
@@ -329,6 +335,7 @@ def main():
     else:
 
         try:
+            selector.say("Use j/k to select color schemes")
             selector.prev()
             selector.control()
         except KeyboardInterrupt:
