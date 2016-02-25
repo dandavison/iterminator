@@ -33,8 +33,8 @@ class ColorSchemeSelector(object):
     """
     # Animation control keys
     PAUSE = {' '}
-    NEXT = {'j'}
-    PREV = {'k'}
+    NEXT = {'j', 'n'}
+    PREV = {'k', 'p'}
     QUIT = {'q', '\r', '\x03'}  # q, return, ctrl-c
 
     def __init__(self):
