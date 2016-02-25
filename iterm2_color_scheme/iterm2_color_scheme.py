@@ -4,8 +4,8 @@ from threading import Thread
 from time import sleep
 import argparse
 import os
-import readline
 import random
+import readline
 import subprocess
 import sys
 
