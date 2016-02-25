@@ -329,6 +329,7 @@ def main():
     else:
 
         try:
+            selector.prev()
             selector.control()
         except KeyboardInterrupt:
             print
