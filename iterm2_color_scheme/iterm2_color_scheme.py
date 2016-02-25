@@ -205,9 +205,8 @@ def parse_arguments():
     arg_parser = argparse.ArgumentParser(
         description=(
             "Color theme selector for iTerm2.\n\n"
-            "With no arguments, the command cycles through schemes "
-            "automatically: use space to pause and j/k to go "
-            "forwards/backwards."),
+            "Use j/k to select a color scheme, "
+            "or supply one of the arguments below."),
         epilog=(
             "The color schemes are from "
             "https://github.com/mbadolato/iTerm2-Color-Schemes, which is "
@@ -233,8 +232,8 @@ def parse_arguments():
               "(schemes/second)\n"
               "Key bindings in animation mode:\n"
               "space  - pause/unpause\n"
-              "j      - next scheme\n"
-              "k      - previous scheme\n"
+              "j,n    - next scheme\n"
+              "k,p    - previous scheme\n"
               "return - quit\n\n"),
     )
 
