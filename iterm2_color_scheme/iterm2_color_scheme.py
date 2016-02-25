@@ -85,6 +85,11 @@ class ColorSchemeSelector(object):
         sys.stdout.flush()
 
     def animate(self, speed, shuffle):
+        """
+        Cycle through schemes automatically.
+
+        Keys can be used to pause, and go forwards/backwards.
+        """
         if shuffle:
             self.shuffle()
         self.animation_control.start()
