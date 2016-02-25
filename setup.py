@@ -1,10 +1,12 @@
 from setuptools import find_packages
 from setuptools import setup
 
+from iterm2_color_scheme.iterm2_color_scheme import __version__
+
 
 setup(
     name='iterm2-color-scheme',
-    version='0.1.3',
+    version=__version__,
     author='Dan Davison',
     author_email='dandavison7@gmail.com',
     description="Command-line color scheme selector for iTerm2",

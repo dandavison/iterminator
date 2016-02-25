@@ -12,6 +12,9 @@ import sys
 from getch import getch
 
 
+__version__ = '0.1.4'
+
+
 class Scheme(object):
     """
     An iTerm2 color scheme.
@@ -277,6 +280,12 @@ def parse_arguments():
     )
 
     arg_parser.add_argument(
+        '-v', '--version',
+        action='store_true',
+        help="Show version\n\n"
+    )
+
+    arg_parser.add_argument(
         '-s', '--scheme',
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
@@ -330,6 +339,9 @@ def main():
             print selector.scheme
         elif len(schemes) > 1:
             error("Multiple matches: %s" % ', '.join(schemes))
+
+    elif args.version:
+        print __version__
 
     else:
 
