@@ -35,7 +35,7 @@ class ColorSchemeSelector(object):
     PAUSE = {' '}
     NEXT = {'j'}
     PREV = {'k'}
-    QUIT = {'\r', '\x03'}  # return, ctrl-c
+    QUIT = {'q', '\r', '\x03'}  # q, return, ctrl-c
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
