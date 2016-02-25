@@ -90,14 +90,14 @@ class ColorSchemeSelector(object):
         if shuffle:
             self.shuffle()
         self.animation_control.start()
-        self.schemes.rotate(+1)
+        self.prev()
         while True:
             if self.quitting:
                 self.quit()
             elif self.paused:
                 sleep(0.1)
             else:
-                self.schemes.rotate(-1)
+                self.next()
                 self.apply()
                 self.tell()
                 sleep(1.0 / speed)
