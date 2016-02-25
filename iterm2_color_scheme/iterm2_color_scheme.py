@@ -54,15 +54,6 @@ class ColorSchemeSelector(object):
         self.paused = False
         self.quitting = False
 
-        readline.set_completer(self.complete)
-        readline.set_completer_delims('')
-        readline.parse_and_bind('tab: complete')
-        readline.parse_and_bind('set completion-ignore-case on')
-        readline.parse_and_bind('set completion-query-items -1')
-        readline.parse_and_bind('set show-all-if-ambiguous on')
-        readline.parse_and_bind('"\e[C": menu-complete')
-        readline.parse_and_bind('"\e[D": menu-complete-backward')
-
     @property
     def scheme(self):
         return self.schemes[0]
@@ -137,6 +128,15 @@ class ColorSchemeSelector(object):
         """
         Select a color theme interactively.
         """
+        readline.set_completer(self.complete)
+        readline.set_completer_delims('')
+        readline.parse_and_bind('tab: complete')
+        readline.parse_and_bind('set completion-ignore-case on')
+        readline.parse_and_bind('set completion-query-items -1')
+        readline.parse_and_bind('set show-all-if-ambiguous on')
+        readline.parse_and_bind('"\e[C": menu-complete')
+        readline.parse_and_bind('"\e[D": menu-complete-backward')
+
         while True:
             try:
                 self.goto(self.name_to_scheme[raw_input()])
@@ -197,19 +197,14 @@ class ColorSchemeSelector(object):
             ]
 
 
-def main():
-    if os.getenv('TMUX'):
-        error(
-            "Please detach from your tmux session before running this command."
-        )
-
+def parse_arguments():
     selector = ColorSchemeSelector()
     arg_parser = argparse.ArgumentParser(
         description=(
             "Color theme selector for iTerm2.\n\n"
-            "With no arguments, the command runs in interactive mode: use tab "
-            "to complete color scheme names (other standard readline key "
-            "bindings are also available)."),
+            "With no arguments, the command cycles through schemes "
+            "automatically: use space to pause and j/k to go "
+            "forwards/backwards."),
         epilog=(
             "The color schemes are from "
             "https://github.com/mbadolato/iTerm2-Color-Schemes, which is "
@@ -225,31 +220,52 @@ def main():
 
     arg_parser.add_argument(
         '-a', '--animate',
+        metavar='pause duration',
         nargs='?',
         type=float,
         const=1.0,
-        help=("Cycle through color schemes automatically "
-              "(optionally followed by pause duration in seconds)\n"
-              "The following keys are available in animation mode:\n"
-              "space - pause/unpause\n\n"),
+        help=("Cycle through color schemes automatically.\n"
+              "This is the default mode when no arguments are supplied.\n"
+              "This argument can be used to specify the duration in seconds "
+              "of the pause before changing scheme\n"
+              "Key bindings in animation mode:\n"
+              "space  - pause/unpause\n"
+              "j      - next scheme\n"
+              "k      - previous scheme\n"
+              "return - quit\n\n"),
+    )
+
+    arg_parser.add_argument(
+        '-i', '--interactive',
+        action='store_true',
+        help=("Select color scheme with tab-completion and other "
+              "readline functionality\n"
+              "Key bindings in interactive mode:\n"
+              "tab         - complete\n"
+              "right arrow - next completion\n"
+              "left arrow  - previous completion\n"
+              "return      - select\n"
+              "Plus the usual emacs-based readline defaults such as\n"
+              "ctrl a      - beginning of line\n"
+              "ctrl k      - kill to end of line\n\n"),
     )
 
     arg_parser.add_argument(
         '-l', '--list',
         action='store_true',
-        help="List available color schemes",
+        help="List available color schemes\n\n",
     )
 
     arg_parser.add_argument(
         '-q', '--quiet',
         action='store_true',
-        help="Don't display initial key bindings help message",
+        help="Don't display initial key bindings help message\n\n",
     )
 
     arg_parser.add_argument(
         '-r', '--random',
         action='store_true',
-        help="Select a random color scheme"
+        help="Select a random color scheme\n\n"
     )
 
     arg_parser.add_argument(
@@ -257,7 +273,17 @@ def main():
         help="Available choices are\n%s" % ' | '.join(selector.scheme_names),
     )
 
-    args = arg_parser.parse_args()
+    return arg_parser.parse_args()
+
+
+def main():
+    if os.getenv('TMUX'):
+        error(
+            "Please detach from your tmux session before running this command."
+        )
+
+    selector = ColorSchemeSelector()
+    args = parse_arguments()
 
     if args.animate:
 
