@@ -9,26 +9,26 @@ With no arguments, use `j/k` or `n/p` to move through color schemes.
 ##### Examples
 
 <table>
-    <tr>
-      <td><code>iterm2-color-scheme</code></td>
-      <td>Use <code>j/k</code> or <code>n/p</code> to move through color schemes.</td>
-    </tr>
-    <tr>
-      <td><code>iterm2-color-scheme -a 2.5</code></td>
-      <td>Cycle through schemes automatically at 2.5 schemes/second. Use <code>space</code> to pause, <code>j/k</code> or <code>n/p</code> to go forwards/backwards.</td>
-    </tr>
-    <tr>
-      <td><code>iterm2-color-scheme -i</code></td>
-      <td>Select color scheme interactively with tab completion.</td>
-    </tr>
-    <tr>
-      <td><code>iterm2-color-scheme -s cobalt2</code></td>
-      <td>Select a scheme (case-insensitive substring matching).</td>
-    </tr>
-    <tr>
-      <td><code>--help</code></td>
-      <td>Show help.</td>
-    </tr>
+  <tr>
+    <td><code>iterm2-color-scheme</code></td>
+    <td>Use <code>j/k</code> or <code>n/p</code> to move through color schemes.</td>
+  </tr>
+  <tr>
+    <td style="width:100%"><code>iterm2-color-scheme -a 2.5</code></td>
+    <td>Cycle through schemes automatically at 2.5 schemes/second. Use <code>space</code> to pause, <code>j/k</code> or <code>n/p</code> to go forwards/backwards.</td>
+  </tr>
+  <tr>
+    <td><code>iterm2-color-scheme -i</code></td>
+    <td>Select color scheme interactively with tab completion.</td>
+  </tr>
+  <tr>
+    <td><code>iterm2-color-scheme -s cobalt2</code></td>
+    <td>Select a scheme (case-insensitive substring matching).</td>
+  </tr>
+  <tr>
+    <td><code>--help</code></td>
+    <td>Show help.</td>
+  </tr>
 </table>
 
 
