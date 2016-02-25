@@ -207,13 +207,15 @@ class ColorSchemeSelector(object):
             ]
 
 
+DEFAULT_HELP_MESSAGE = "Use j/k or n/p to select color schemes"
+
+
 def parse_arguments():
     selector = ColorSchemeSelector()
     arg_parser = argparse.ArgumentParser(
         description=(
-            "Color theme selector for iTerm2.\n\n"
-            "Use j/k to select a color scheme, "
-            "or supply one of the arguments below."),
+            "Color theme selector for iTerm2.\n\n%s"
+            ", or supply one of the arguments below.") % DEFAULT_HELP_MESSAGE,
         epilog=(
             "The color schemes are from "
             "https://github.com/mbadolato/iTerm2-Color-Schemes, which is "
@@ -234,10 +236,8 @@ def parse_arguments():
         type=float,
         const=1.0,
         help=("Cycle through color schemes automatically.\n"
-              "This is the default mode when no arguments are supplied.\n"
-              "This argument can be used to specify the animation speed "
-              "(schemes/second)\n"
-              "Key bindings in animation mode:\n"
+              "Optional value is animation speed (schemes/second)\n"
+              "Key bindings:\n"
               "space  - pause/unpause\n"
               "j,n    - next scheme\n"
               "k,p    - previous scheme\n"
@@ -247,9 +247,8 @@ def parse_arguments():
     arg_parser.add_argument(
         '-i', '--interactive',
         action='store_true',
-        help=("Select color scheme with tab-completion and other "
-              "readline functionality\n"
-              "Key bindings in interactive mode:\n"
+        help=("Select color scheme with tab-completion.\n"
+              "Key bindings:\n"
               "tab         - complete\n"
               "right arrow - next completion\n"
               "left arrow  - previous completion\n"
@@ -335,7 +334,7 @@ def main():
     else:
 
         try:
-            selector.say("Use j/k to select color schemes")
+            selector.say(DEFAULT_HELP_MESSAGE)
             selector.prev()
             selector.control()
         except KeyboardInterrupt:
