@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from collections import deque
+from threading import Thread
 from time import sleep
 import argparse
 import os
@@ -8,11 +9,15 @@ import random
 import subprocess
 import sys
 
+from getch import getch
+
 
 class ColorSchemeSelector(object):
     """
     An interactive iTerm2 color scheme selector.
     """
+    # Animation control keys
+    PAUSE = ' '
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
@@ -40,13 +45,25 @@ class ColorSchemeSelector(object):
         schemes = deque(self.schemes)
         if shuffle:
             random.shuffle(schemes)
+        schemes.rotate(-1)
+        self.paused = False
+        Thread(target=self.animation_control).start()
         while True:
-            scheme = schemes[0].name
-            self.apply_scheme(scheme)
-            sys.stdout.write('\r%s\r%s' % (blank, scheme))
-            sys.stdout.flush()
-            schemes.rotate(1)
-            sleep(animate_interval)
+            if self.paused:
+                sleep(0.1)
+            else:
+                schemes.rotate(1)
+                scheme = schemes[0].name
+                self.apply_scheme(scheme)
+                sys.stdout.write('\r%s\r%s' % (blank, scheme))
+                sys.stdout.flush()
+                sleep(animate_interval)
+
+    def animation_control(self):
+        while True:
+            char = getch()
+            if char == self.PAUSE:
+                self.paused = not self.paused
 
     def select(self):
         """
@@ -169,7 +186,9 @@ def main():
         type=float,
         const=1.0,
         help=("Cycle through color schemes automatically "
-              "(optionally followed by pause duration in seconds)"),
+              "(optionally followed by pause duration in seconds)\n"
+              "The following keys are available in animation mode:\n"
+              "space - pause/unpause\n\n"),
     )
 
     arg_parser.add_argument(
