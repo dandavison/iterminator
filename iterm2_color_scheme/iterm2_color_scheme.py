@@ -226,7 +226,7 @@ def parse_arguments():
         nargs='?',
         metavar='speed',
         type=float,
-        default=1.0,
+        const=1.0,
         help=("Cycle through color schemes automatically.\n"
               "This is the default mode when no arguments are supplied.\n"
               "This argument can be used to specify the animation speed "
@@ -288,6 +288,14 @@ def main():
     selector = ColorSchemeSelector()
     args = parse_arguments()
 
+    if args.animation_speed:
+
+        try:
+            selector.animate(args.animation_speed, args.random)
+        except KeyboardInterrupt:
+            print
+            sys.exit(0)
+
     if args.interactive:
 
         if not args.quiet:
@@ -322,7 +330,7 @@ def main():
     else:
 
         try:
-            selector.animate(args.animation_speed, args.random)
+            selector.control()
         except KeyboardInterrupt:
             print
             sys.exit(0)
