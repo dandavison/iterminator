@@ -50,7 +50,7 @@ class ColorSchemeSelector(object):
         self.scheme_names = [s.name for s in self.schemes]
         self.blank = ' ' * max(len(s.name) for s in self.schemes)
 
-        self.animation_control = Thread(target=self.animation_control)
+        self.animation_control = Thread(target=self.control)
         self.paused = False
         self.quitting = False
 
@@ -105,7 +105,7 @@ class ColorSchemeSelector(object):
                 self.tell()
                 sleep(1.0 / speed)
 
-    def animation_control(self):
+    def control(self):
         while True:
             char = getch()
             if char in self.PAUSE:
