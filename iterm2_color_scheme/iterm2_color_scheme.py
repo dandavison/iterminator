@@ -65,9 +65,7 @@ class ColorSchemeSelector(object):
         self.schemes.rotate(+1)
 
     def goto(self, scheme):
-        # TODO O(1)
-        while self.scheme != scheme:
-            self.next()
+        self.schemes.rotate(-list(self.schemes).index(scheme))
 
     def shuffle(self):
         random.shuffle(self.schemes)
