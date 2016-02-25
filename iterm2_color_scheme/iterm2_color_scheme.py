@@ -91,7 +91,7 @@ class ColorSchemeSelector(object):
             self.scheme.path,
         ])
 
-    def display_scheme(self):
+    def tell(self):
         sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
         sys.stdout.flush()
 
@@ -108,7 +108,7 @@ class ColorSchemeSelector(object):
             else:
                 self.schemes.rotate(-1)
                 self.apply()
-                self.display_scheme()
+                self.tell()
                 sleep(animate_interval)
 
     def animation_control(self):
@@ -119,11 +119,11 @@ class ColorSchemeSelector(object):
             elif char in self.NEXT:
                 self.next()
                 self.apply()
-                self.display_scheme()
+                self.tell()
             elif char in self.PREV:
                 self.prev()
                 self.apply()
-                self.display_scheme()
+                self.tell()
             elif char in self.QUIT:
                 self.quitting = True
                 break
