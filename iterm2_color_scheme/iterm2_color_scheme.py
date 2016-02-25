@@ -17,10 +17,10 @@ class ColorSchemeSelector(object):
     An interactive iTerm2 color scheme selector.
     """
     # Animation control keys
-    PAUSE = ' '
-    NEXT = 'j'
-    PREV = 'k'
-    QUIT = '\r'
+    PAUSE = {' '}
+    NEXT = {'j'}
+    PREV = {'k'}
+    QUIT = {'\r', '\x03'}  # return, ctrl-c
 
     def __init__(self):
         self.repo_dir = os.path.join(os.path.dirname(__file__),
@@ -48,9 +48,24 @@ class ColorSchemeSelector(object):
         readline.parse_and_bind('"\e[C": menu-complete')
         readline.parse_and_bind('"\e[D": menu-complete-backward')
 
+    @property
+    def scheme(self):
+        return self.schemes[0]
+
+    def next(self):
+        self.schemes.rotate(-1)
+
+    def prev(self):
+        self.schemes.rotate(+1)
+
+    def goto(self, scheme):
+        # TODO O(1)
+        while self.scheme != scheme:
+            self.next()
+
     def animate(self, animate_interval, shuffle):
         if shuffle:
-            random.shuffle(self.schemes)
+            self.shuffle()
         self.animation_control.start()
         self.schemes.rotate(+1)
         while True:
@@ -60,10 +75,13 @@ class ColorSchemeSelector(object):
                 sleep(0.1)
             else:
                 self.schemes.rotate(-1)
-                scheme = self.schemes[0].name
-                self.apply_scheme(scheme)
+                self.apply()
                 self.display_scheme()
                 sleep(animate_interval)
+
+    def shuffle(self):
+        random.shuffle(self.schemes)
+        self.scheme_names = [s.name for s in self.schemes]
 
     def display_scheme(self):
         sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
@@ -72,17 +90,17 @@ class ColorSchemeSelector(object):
     def animation_control(self):
         while True:
             char = getch()
-            if char == self.PAUSE:
+            if char in self.PAUSE:
                 self.paused = not self.paused
-            elif char == self.NEXT:
-                self.schemes.rotate(-1)
-                self.apply_scheme()
+            elif char in self.NEXT:
+                self.next()
+                self.apply()
                 self.display_scheme()
-            elif char == self.PREV:
-                self.schemes.rotate(+1)
-                self.apply_scheme()
+            elif char in self.PREV:
+                self.prev()
+                self.apply()
                 self.display_scheme()
-            elif char == self.QUIT:
+            elif char in self.QUIT:
                 self.quitting = True
                 break
 
@@ -97,14 +115,14 @@ class ColorSchemeSelector(object):
         """
         while True:
             try:
-                self.scheme = self.name_to_scheme[raw_input()]
+                self.goto(self.name_to_scheme[raw_input()])
             except KeyboardInterrupt:
                 print
                 sys.exit(0)
             except KeyError:
                 sys.exit(1)
             else:
-                self.apply_scheme()
+                self.apply()
 
     def complete(self, text, state):
         """
@@ -125,7 +143,8 @@ class ColorSchemeSelector(object):
                 if len(self.current_matches) == 1:
                     # Unique match; apply scheme and return the completion
                     [completion] = self.current_matches
-                    self.apply_scheme(completion)
+                    self.goto(self.name_to_scheme[completion])
+                    self.apply()
                     return completion
             else:
                 self.current_matches = self.scheme_names
@@ -153,14 +172,10 @@ class ColorSchemeSelector(object):
                 if text.lower() in name.lower()
             ]
 
-    def apply_scheme(self, name=None):
+    def apply(self):
         """
         Apply current scheme to current iTerm2 session.
         """
-        if name is not None:
-            self.scheme = self.name_to_scheme[name]
-        else:
-            self.scheme = self.schemes[0]
         subprocess.check_call([
             self.repo_dir + '/tools/preview.rb',
             self.scheme.path,
@@ -245,29 +260,40 @@ def main():
     args = arg_parser.parse_args()
 
     if args.animate:
+
         try:
             selector.animate(args.animate, args.random)
         except KeyboardInterrupt:
             print
             sys.exit(0)
+
     elif args.list:
-        for scheme in selector.scheme_names:
+
+        for scheme in selector.schemes:
             print scheme
+
     elif args.random:
-        scheme = random.choice(selector.scheme_names)
-        print scheme
-        selector.apply_scheme(scheme)
+
+        selector.shuffle()
+        selector.apply()
+        print selector.scheme
+
     elif args.scheme:
-        schemes = selector.get_matches(args.scheme)
-        if len(schemes) == 0:
+
+        names = selector.get_matches(args.scheme)
+        if len(names) == 0:
             error("No matches")
-        elif len(schemes) == 1:
-            [scheme] = schemes
-            print scheme
-            selector.apply_scheme(scheme)
+        elif len(names) == 1:
+            [name] = names
+            scheme = selector.name_to_scheme[name]
+            selector.goto(scheme)
+            selector.apply()
+            print selector.scheme
         elif len(schemes) > 1:
             error("Multiple matches: %s" % ', '.join(schemes))
+
     else:
+
         if not args.quiet:
             print 'Tab to complete color scheme names'
         selector.select()
