@@ -12,6 +12,21 @@ import sys
 from getch import getch
 
 
+class Scheme(object):
+    """
+    An iTerm2 color scheme.
+    """
+    def __init__(self, path):
+        self.path = path
+
+    @property
+    def name(self):
+        return os.path.basename(self.path).split('.')[0]
+
+    def __repr__(self):
+        return self.name
+
+
 class ColorSchemeSelector(object):
     """
     An interactive iTerm2 color scheme selector.
@@ -63,6 +78,23 @@ class ColorSchemeSelector(object):
         while self.scheme != scheme:
             self.next()
 
+    def shuffle(self):
+        random.shuffle(self.schemes)
+        self.scheme_names = [s.name for s in self.schemes]
+
+    def apply(self):
+        """
+        Apply current scheme to current iTerm2 session.
+        """
+        subprocess.check_call([
+            self.repo_dir + '/tools/preview.rb',
+            self.scheme.path,
+        ])
+
+    def display_scheme(self):
+        sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
+        sys.stdout.flush()
+
     def animate(self, animate_interval, shuffle):
         if shuffle:
             self.shuffle()
@@ -78,14 +110,6 @@ class ColorSchemeSelector(object):
                 self.apply()
                 self.display_scheme()
                 sleep(animate_interval)
-
-    def shuffle(self):
-        random.shuffle(self.schemes)
-        self.scheme_names = [s.name for s in self.schemes]
-
-    def display_scheme(self):
-        sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
-        sys.stdout.flush()
 
     def animation_control(self):
         while True:
@@ -171,30 +195,6 @@ class ColorSchemeSelector(object):
                 for name in self.scheme_names
                 if text.lower() in name.lower()
             ]
-
-    def apply(self):
-        """
-        Apply current scheme to current iTerm2 session.
-        """
-        subprocess.check_call([
-            self.repo_dir + '/tools/preview.rb',
-            self.scheme.path,
-        ])
-
-
-class Scheme(object):
-    """
-    An iTerm2 color scheme.
-    """
-    def __init__(self, path):
-        self.path = path
-
-    @property
-    def name(self):
-        return os.path.basename(self.path).split('.')[0]
-
-    def __repr__(self):
-        return self.name
 
 
 def main():
