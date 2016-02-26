@@ -8,11 +8,11 @@ pip install iterm2-color-scheme
 
 - `iterm2-color-scheme`
 
-  Use <code>j/k</code> or <code>n/p</code> to move through color schemes.
+  Use <code>right/left</code> or <code>j/k</code> or <code>n/p</code> to move forwards/backwards through color schemes.
 
 - `iterm2-color-scheme -a 2.5`
 
-  Cycle through schemes automatically at 2.5 schemes/second. Use <code>space</code> to pause, <code>j/k</code> or <code>n/p</code> to go forwards/backwards.
+  Cycle through schemes automatically at 2.5 schemes/second. Use <code>space</code> to pause, <code>right/left</code> or <code>j/k</code> or <code>n/p</code> to move forwards/backwards through color schemes.
 
 - `iterm2-color-scheme -s cobalt2`
 
