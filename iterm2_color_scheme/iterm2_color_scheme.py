@@ -12,9 +12,6 @@ import sys
 from getch import getch
 
 
-__version__ = '0.1.4'
-
-
 class Scheme(object):
     """
     An iTerm2 color scheme.
@@ -341,7 +338,9 @@ def main():
             error("Multiple matches: %s" % ', '.join(schemes))
 
     elif args.version:
-        print __version__
+        with open(os.path.join(os.path.dirname(__file__),
+                               'version.txt')) as fp:
+            print fp.read().strip()
 
     else:
 

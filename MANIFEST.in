@@ -5,3 +5,4 @@ prune iterm2_color_scheme/iTerm2-Color-Schemes/screenshots
 prune iterm2_color_scheme/iTerm2-Color-Schemes/terminal
 prune iterm2_color_scheme/iTerm2-Color-Schemes/terminator
 prune iterm2_color_scheme/iTerm2-Color-Schemes/xrdb
+include iterm2_color_scheme/version.txt
