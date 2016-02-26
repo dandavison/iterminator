@@ -21,7 +21,4 @@ setup(
             'iterm2-color-scheme = iterm2_color_scheme.iterm2_color_scheme:main',
         ],
     },
-    install_requires = [
-        'py-getch',
-    ],
 )
