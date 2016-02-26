@@ -86,6 +86,7 @@ class ColorSchemeSelector(object):
             if len(msg) > len(self.blank):
                 self.blank = ' ' * len(msg)
             sys.stdout.write(msg)
+            sys.stdout.flush()
 
     def tell(self):
         sys.stdout.write('\r%s\r%s' % (self.blank, self.scheme))
