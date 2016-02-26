@@ -9,7 +9,7 @@ import readline
 import subprocess
 import sys
 
-from getch import getch
+import getchs
 
 
 class Scheme(object):
@@ -33,9 +33,9 @@ class ColorSchemeSelector(object):
     """
     # Animation control keys
     PAUSE = {' '}
-    NEXT = {'j', 'n'}
-    PREV = {'k', 'p'}
-    QUIT = {'q', '\r', '\x03'}  # q, return, ctrl-c
+    NEXT = {'j', 'n', getchs.RIGHT, getchs.DOWN}
+    PREV = {'k', 'p', getchs.LEFT, getchs.UP}
+    QUIT = {'q', '\r', getchs.CTRL_C}
 
     def __init__(self, quiet=True):
         self.quiet = quiet
@@ -114,18 +114,18 @@ class ColorSchemeSelector(object):
 
     def control(self):
         while True:
-            char = getch()
-            if char in self.PAUSE:
+            chars = getchs.getchs()
+            if chars in self.PAUSE:
                 self.paused = not self.paused
-            elif char in self.NEXT:
+            elif chars in self.NEXT:
                 self.next()
                 self.apply()
                 self.tell()
-            elif char in self.PREV:
+            elif chars in self.PREV:
                 self.prev()
                 self.apply()
                 self.tell()
-            elif char in self.QUIT:
+            elif chars in self.QUIT:
                 self.quitting = True
                 break
 
@@ -207,7 +207,7 @@ class ColorSchemeSelector(object):
             ]
 
 
-DEFAULT_HELP_MESSAGE = "Use j/k or n/p to select color schemes"
+DEFAULT_HELP_MESSAGE = "Use left/right or j/k or n/p to select color schemes"
 
 
 def parse_arguments():
@@ -238,10 +238,10 @@ def parse_arguments():
         help=("Cycle through color schemes automatically.\n"
               "Optional value is animation speed (schemes/second)\n"
               "Key bindings:\n"
-              "space  - pause/unpause\n"
-              "j,n    - next scheme\n"
-              "k,p    - previous scheme\n"
-              "return - quit\n\n"),
+              "space             - pause/unpause\n"
+              "right arrow, j, n - next scheme\n"
+              "left arrow, k, p  - previous scheme\n"
+              "return            - quit\n\n"),
     )
 
     arg_parser.add_argument(
