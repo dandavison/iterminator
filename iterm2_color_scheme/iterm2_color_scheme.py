@@ -334,8 +334,8 @@ def main():
             selector.goto(scheme)
             selector.apply()
             print selector.scheme
-        elif len(schemes) > 1:
-            error("Multiple matches: %s" % ', '.join(schemes))
+        elif len(names) > 1:
+            error("Multiple matches: %s" % ', '.join(names))
 
     elif args.version:
         with open(os.path.join(os.path.dirname(__file__),
