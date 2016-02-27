@@ -5,9 +5,9 @@ from setuptools import setup
 
 
 setup(
-    name='iterm2-color-scheme',
+    name='iterminator',
     version=(open(os.path.join(os.path.dirname(__file__),
-                               'iterm2_color_scheme',
+                               'iterminator',
                                'version.txt'))
              .read().strip()),
     author='Dan Davison',
@@ -18,7 +18,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'iterm2-color-scheme = iterm2_color_scheme.iterm2_color_scheme:main',
+            'iterminator = iterminator.iterminator:main',
         ],
     },
 )

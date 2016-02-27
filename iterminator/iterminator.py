@@ -225,7 +225,7 @@ def parse_arguments():
             "iTerm2-Color-Schemes project. To add a new scheme, please first "
             "create a pull request against iTerm2-Color-Schemes to add your "
             "scheme, and then open a pull request or issue against "
-            "https://github.com/dandavison/iterm2-color-scheme to update the "
+            "https://github.com/dandavison/iterminator to update the "
             "submodule."),
         formatter_class=argparse.RawTextHelpFormatter,
     )

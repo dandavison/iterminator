@@ -1,32 +1,32 @@
 #### Command-line color scheme selector for iTerm2
 
 ```sh
-pip install iterm2-color-scheme
+pip install iterminator
 ```
 
 ##### Examples
 
-- `iterm2-color-scheme`
+- `iterminator`
 
   Use <code>right/left</code> or <code>j/k</code> or <code>n/p</code> to move forwards/backwards through color schemes.
 
-- `iterm2-color-scheme -a 2.5`
+- `iterminator -a 2.5`
 
   Cycle through schemes automatically at 2.5 schemes/second. Use <code>space</code> to pause, <code>right/left</code> or <code>j/k</code> or <code>n/p</code> to move forwards/backwards through color schemes.
 
-- `iterm2-color-scheme -s cobalt2`
+- `iterminator -s cobalt2`
 
   Select a single scheme (case-insensitive substring matching).
 
-- `iterm2-color-scheme -i`
+- `iterminator -i`
 
   Select color scheme interactively with tab completion.
 
-- `iterm2-color-scheme -l`
+- `iterminator -l`
 
   List color schemes.
 
-- `iterm2-color-scheme --help`
+- `iterminator --help`
 
   Show help.
 
