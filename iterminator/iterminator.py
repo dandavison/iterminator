@@ -190,22 +190,21 @@ class ColorSchemeSelector(object):
 
         return completion
 
-    def get_matches(self, text):
+    def get_matches(self, query):
         """
         Return matches for current readline input.
         """
-        if text.endswith('$'):
-            text = text[:-1]
-            if text in self.name_to_scheme:
-                return [text]
-            else:
-                return []
+        if query.endswith('$'):
+            query = query[:-1]
+            match_operator = lambda query, name: query.lower() == name.lower()
         else:
-            return [
-                name
-                for name in self.scheme_names
-                if text.lower() in name.lower()
-            ]
+            match_operator = lambda query, name: query.lower() in name.lower()
+
+        return [
+            name
+            for name in self.scheme_names
+            if match_operator(query, name)
+        ]
 
 
 DEFAULT_HELP_MESSAGE = "Use left/right or j/k or n/p to select color schemes"
@@ -329,12 +328,14 @@ def main():
         names = selector.get_matches(args.scheme)
         if len(names) == 0:
             error("No matches")
-        match = sum(map(lambda x: x == args.scheme , names))
-        if len(names) == 1 or match == 1:
-            if len(names) == 1:
-                [name] = names
-            else:
-                name = names[names.index(args.scheme)]
+        elif len(names) > 1:
+            # Check whether it's an exact match as well as a substring
+            names_2 = selector.get_matches(args.scheme + '$')
+            if len(names_2) == 1:
+                names = names_2
+
+        if len(names) == 1:
+            [name] = names
             scheme = selector.name_to_scheme[name]
             selector.goto(scheme)
             selector.apply()
