@@ -329,8 +329,12 @@ def main():
         names = selector.get_matches(args.scheme)
         if len(names) == 0:
             error("No matches")
-        elif len(names) == 1:
-            [name] = names
+        match = sum(map(lambda x: x == args.scheme , names))
+        if len(names) == 1 or match == 1:
+            if len(names) == 1:
+                [name] = names
+            else:
+                name = names[names.index(args.scheme)]
             scheme = selector.name_to_scheme[name]
             selector.goto(scheme)
             selector.apply()
