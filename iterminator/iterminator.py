@@ -12,7 +12,7 @@ import sys
 import getchs
 
 
-LIGHT_SCHEMES = [
+LIGHT_SCHEMES = {
     '3024 Day',
     'AtomOneLight',
     'Belafonte Day',
@@ -27,7 +27,7 @@ LIGHT_SCHEMES = [
     'Spring',
     'Terminal Basic',
     'Tomorrow',
-]
+}
 
 
 class Scheme(object):
