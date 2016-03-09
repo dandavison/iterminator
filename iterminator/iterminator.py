@@ -47,13 +47,16 @@ class ColorSchemeSelector(object):
             for scheme_file in os.listdir(schemes_dir)
             if scheme_file.endswith('.itermcolors')
         )
-        self.name_to_scheme = {s.name: s for s in self.schemes}
-        self.scheme_names = [s.name for s in self.schemes]
-        self.blank = ' ' * max(len(s.name) for s in self.schemes)
+        self._post_change_schemes_hook()
 
         self.animation_control = Thread(target=self.control)
         self.paused = False
         self.quitting = False
+
+    def _post_change_schemes_hook(self):
+        self.name_to_scheme = {s.name: s for s in self.schemes}
+        self.scheme_names = [s.name for s in self.schemes]
+        self.blank = ' ' * max(len(s.name) for s in self.schemes)
 
     @property
     def scheme(self):
@@ -70,7 +73,7 @@ class ColorSchemeSelector(object):
 
     def shuffle(self):
         random.shuffle(self.schemes)
-        self.scheme_names = [s.name for s in self.schemes]
+        self._post_change_schemes_hook()
 
     def apply(self):
         """
