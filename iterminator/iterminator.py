@@ -12,6 +12,24 @@ import sys
 import getchs
 
 
+LIGHT_SCHEMES = [
+    '3024 Day',
+    'AtomOneLight',
+    'Belafonte Day',
+    'CLRS',
+    'Github',
+    'Man Page',
+    'Material',
+    'Novel',
+    'PencilLight',
+    'Piatto Light',
+    'Solarized Light',
+    'Spring',
+    'Terminal Basic',
+    'Tomorrow',
+]
+
+
 class Scheme(object):
     """
     An iTerm2 color scheme.
@@ -57,6 +75,20 @@ class ColorSchemeSelector(object):
         self.name_to_scheme = {s.name: s for s in self.schemes}
         self.scheme_names = [s.name for s in self.schemes]
         self.blank = ' ' * max(len(s.name) for s in self.schemes)
+
+    def filter(self, scheme_names):
+        self.schemes = deque(
+            scheme for scheme in self.schemes
+            if scheme.name in scheme_names
+        )
+        self._post_change_schemes_hook()
+
+    def exclude(self, scheme_names):
+        self.schemes = deque(
+            scheme for scheme in self.schemes
+            if scheme.name not in scheme_names
+        )
+        self._post_change_schemes_hook()
 
     @property
     def scheme(self):
@@ -248,6 +280,12 @@ def parse_arguments():
     )
 
     arg_parser.add_argument(
+        '--dark',
+        action='store_true',
+        help="Restrict to dark background themes\n\n",
+    )
+
+    arg_parser.add_argument(
         '-i', '--interactive',
         action='store_true',
         help=("Select color scheme with tab-completion.\n"
@@ -259,6 +297,12 @@ def parse_arguments():
               "Plus the usual emacs-based readline defaults such as\n"
               "ctrl a      - beginning of line\n"
               "ctrl k      - kill to end of line\n\n"),
+    )
+
+    arg_parser.add_argument(
+        '--light',
+        action='store_true',
+        help="Restrict to light background themes\n\n",
     )
 
     arg_parser.add_argument(
@@ -301,6 +345,13 @@ def main():
 
     args = parse_arguments()
     selector = ColorSchemeSelector(quiet=args.quiet)
+
+    if args.dark and args.light:
+        error("Don't request both --light and --dark")
+    if args.dark:
+        selector.exclude(LIGHT_SCHEMES)
+    elif args.light:
+        selector.filter(LIGHT_SCHEMES)
 
     if args.animation_speed:
 
