@@ -26,7 +26,7 @@ class Scheme(object):
         return os.path.basename(self.path).split('.')[0]
 
     @property
-    def colors(self):
+    def scheme(self):
         return parse_scheme(self.name)
 
     def is_light(self):
