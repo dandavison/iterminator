@@ -3,7 +3,7 @@ import os
 from plistlib import readPlist
 
 
-def parse_colors(colorscheme_name):
+def parse_scheme(colorscheme_name):
         app_path = (os.path.abspath(os.path.dirname(__file__)) +
                     '/iTerm2-Color-Schemes/schemes/')
         colorscheme_path = app_path + colorscheme_name + '.itermcolors'
@@ -26,7 +26,7 @@ def convert_background(r, g, b):
 
 
 def light_or_dark(colorscheme_name):
-    colors = parse_colors(colorscheme_name)
+    colors = parse_scheme(colorscheme_name)
     rgb = get_background(colors)
     h, l, s = convert_background(*rgb)
     if l >= 0.5:

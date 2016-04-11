@@ -11,7 +11,7 @@ import sys
 
 import getchs
 
-from colorparser import parse_colors, light_or_dark
+from colorparser import parse_scheme, light_or_dark
 
 
 class Scheme(object):
@@ -27,7 +27,7 @@ class Scheme(object):
 
     @property
     def colors(self):
-        return parse_colors(self.name)
+        return parse_scheme(self.name)
 
     def is_light(self):
         return light_or_dark(self.name)
