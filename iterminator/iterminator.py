@@ -11,29 +11,7 @@ import sys
 
 import getchs
 
-from colorparser import parse_scheme, light_or_dark
-
-
-class Scheme(object):
-    """
-    An iTerm2 color scheme.
-    """
-    def __init__(self, path):
-        self.path = path
-
-    @property
-    def name(self):
-        return os.path.basename(self.path).split('.')[0]
-
-    @property
-    def scheme(self):
-        return parse_scheme(self.name)
-
-    def is_light(self):
-        return light_or_dark(self.name)
-
-    def __repr__(self):
-        return self.name
+from colorscheme import Scheme
 
 
 class ColorSchemeSelector(object):
