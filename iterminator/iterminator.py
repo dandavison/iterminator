@@ -11,38 +11,7 @@ import sys
 
 import getchs
 
-
-LIGHT_SCHEMES = {
-    '3024 Day',
-    'AtomOneLight',
-    'Belafonte Day',
-    'CLRS',
-    'Github',
-    'Man Page',
-    'Material',
-    'Novel',
-    'PencilLight',
-    'Piatto Light',
-    'Solarized Light',
-    'Spring',
-    'Terminal Basic',
-    'Tomorrow',
-}
-
-
-class Scheme(object):
-    """
-    An iTerm2 color scheme.
-    """
-    def __init__(self, path):
-        self.path = path
-
-    @property
-    def name(self):
-        return os.path.basename(self.path).split('.')[0]
-
-    def __repr__(self):
-        return self.name
+from colorscheme import Scheme
 
 
 class ColorSchemeSelector(object):
@@ -76,17 +45,10 @@ class ColorSchemeSelector(object):
         self.scheme_names = [s.name for s in self.schemes]
         self.blank = ' ' * max(len(s.name) for s in self.schemes)
 
-    def filter(self, scheme_names):
+    def filter_light_or_dark(self, is_light):
         self.schemes = deque(
             scheme for scheme in self.schemes
-            if scheme.name in scheme_names
-        )
-        self._post_change_schemes_hook()
-
-    def exclude(self, scheme_names):
-        self.schemes = deque(
-            scheme for scheme in self.schemes
-            if scheme.name not in scheme_names
+            if scheme.is_light() == is_light
         )
         self._post_change_schemes_hook()
 
@@ -349,9 +311,9 @@ def main():
     if args.dark and args.light:
         error("Don't request both --light and --dark")
     if args.dark:
-        selector.exclude(LIGHT_SCHEMES)
+        selector.filter_light_or_dark(False)
     elif args.light:
-        selector.filter(LIGHT_SCHEMES)
+        selector.filter_light_or_dark(True)
 
     if args.animation_speed:
 
