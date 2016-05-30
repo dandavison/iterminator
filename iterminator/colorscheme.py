@@ -10,7 +10,7 @@ class Scheme(object):
     def __init__(self, path):
         self.path = path
         self.name = os.path.basename(self.path).split('.')[0]
-        self.scheme = self.parse_scheme()
+        self.scheme = self.parse()
 
     def background(self):
         background = self.scheme['Background Color']
@@ -24,7 +24,7 @@ class Scheme(object):
         h, l, s = colorsys.rgb_to_hls(*rgb)
         return l >= 0.5
 
-    def parse_scheme(self):
+    def parse(self):
         return readPlist(self.path)
 
     def __repr__(self):
