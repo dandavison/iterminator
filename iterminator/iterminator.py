@@ -129,7 +129,7 @@ class ColorSchemeSelector(object):
 
     def quit(self):
         self.animation_control.join()
-        print
+        print('\n')
         sys.exit(0)
 
     def select(self):
@@ -149,7 +149,7 @@ class ColorSchemeSelector(object):
             try:
                 self.goto(self.name_to_scheme[raw_input()])
             except KeyboardInterrupt:
-                print
+                print('\n')
                 sys.exit(0)
             except KeyError:
                 sys.exit(1)
@@ -320,7 +320,7 @@ def main():
         try:
             selector.animate(args.animation_speed, args.random)
         except KeyboardInterrupt:
-            print
+            print('\n')
             sys.exit(0)
 
     if args.interactive:
@@ -331,13 +331,13 @@ def main():
     elif args.list:
 
         for scheme in selector.schemes:
-            print scheme
+            print(scheme)
 
     elif args.random:
 
         selector.shuffle()
         selector.apply()
-        print selector.scheme
+        print(selector.scheme)
 
     elif args.scheme:
 
@@ -355,14 +355,14 @@ def main():
             scheme = selector.name_to_scheme[name]
             selector.goto(scheme)
             selector.apply()
-            print selector.scheme
+            print(selector.scheme)
         elif len(names) > 1:
             error("Multiple matches: %s" % ', '.join(names))
 
     elif args.version:
         with open(os.path.join(os.path.dirname(__file__),
                                'version.txt')) as fp:
-            print fp.read().strip()
+            print(fp.read().strip())
 
     else:
 
@@ -371,12 +371,12 @@ def main():
             selector.prev()
             selector.control()
         except KeyboardInterrupt:
-            print
+            print('\n')
             sys.exit(0)
 
 
 def error(msg):
-    print >>sys.stderr, msg
+    print(msg, file=sys.stderr)
     sys.exit(1)
 
 

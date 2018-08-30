@@ -53,4 +53,4 @@ if __name__ == '__main__':
         if chars == CTRL_C:
             exit(0)
         else:
-            print '%r' % chars
+            print('%r' % chars, map(ord, chars))
