@@ -9,11 +9,11 @@ import tty
 
 POLL_INTERVAL = 0.1
 
-CTRL_C = '\x03'
-LEFT = '\x1b[D'
-RIGHT = '\x1b[C'
-UP = '\x1b[A'
-DOWN = '\x1b[B'
+CTRL_C = "\x03"
+LEFT = "\x1b[D"
+RIGHT = "\x1b[C"
+UP = "\x1b[A"
+DOWN = "\x1b[B"
 
 
 def setNonBlocking(fd):
@@ -47,10 +47,10 @@ def getchs():
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     while True:
         chars = getchs()
         if chars == CTRL_C:
             exit(0)
         else:
-            print('%r' % chars, map(ord, chars))
+            print("%r" % chars, map(ord, chars))
