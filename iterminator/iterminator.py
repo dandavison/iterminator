@@ -11,7 +11,7 @@ import sys
 
 import getchs
 
-from colorscheme import Scheme
+from iterminator.colorscheme import Scheme
 
 
 class ColorSchemeSelector(object):
