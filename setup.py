@@ -15,5 +15,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    install_requires=["gnureadline>=8.0.0"],
     entry_points={"console_scripts": ["iterminator = iterminator.iterminator:main"]},
 )

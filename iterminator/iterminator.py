@@ -5,9 +5,13 @@ from time import sleep
 import argparse
 import os
 import random
-import readline
 import subprocess
 import sys
+
+try:
+    import readline
+except ImportError:
+    import gnureadline as readline
 
 import getchs
 
