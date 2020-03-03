@@ -35,7 +35,7 @@ class ColorSchemeSelector(object):
         schemes_dir = self.repo_dir + "/schemes"
         self.schemes = deque(
             Scheme(os.path.join(schemes_dir, scheme_file))
-            for scheme_file in os.listdir(schemes_dir)
+            for scheme_file in sorted(os.listdir(schemes_dir), key=str.lower)
             if scheme_file.endswith(".itermcolors")
         )
         self._post_change_schemes_hook()
